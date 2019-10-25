@@ -1,0 +1,6 @@
+[submodule "src/pytorch_semantic_segmentation"]
+	path = src/pytorch_semantic_segmentation
+	url = https://github.com/adynathos/pytorch-semantic-segmentation
+[submodule "src/a04_reconstruction/pix2pixHD"]
+	path = src/a04_reconstruction/pix2pixHD
+	url = https://github.com/adynathos/pix2pixHD
