@@ -5,7 +5,7 @@ Krzysztof Lis, Krishna Nakka, Pascal Fua, Mathieu Salzmann
 [[article]](http://openaccess.thecvf.com/content_ICCV_2019/papers/Lis_Detecting_the_Unexpected_via_Image_Resynthesis_ICCV_2019_paper.pdf)
  [[poster]](https://liskr.net/pub/DetectingTheUnexpected_Poster.pdf)
 
-<img src="doc/unexpected_pipeline_diagram.svg" alt="pipeline" width="100%" />
+<img src="doc/unexpected_pipeline_diagram_embed.svg" alt="pipeline" width="100%" />
 
 ## Installation
 
