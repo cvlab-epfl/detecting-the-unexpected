@@ -1,3 +1,11 @@
+# Detecting the Unexpected via Image Resynthesis
+Krzysztof Lis, Krishna Nakka, Pascal Fua, Mathieu Salzmann
+**ICCV 2019**
+
+[[article]](http://openaccess.thecvf.com/content_ICCV_2019/papers/Lis_Detecting_the_Unexpected_via_Image_Resynthesis_ICCV_2019_paper.pdf)
+ [[poster]](https://liskr.net/pub/DetectingTheUnexpected_Poster.pdf)
+
+<img src="doc/unexpected_pipeline_diagram.svg" alt="pipeline" width="100%" />
 
 ## Installation
 
@@ -39,3 +47,32 @@ and place them in `detecting-the-unexpected/exp` (or another location specified 
 * `data`
   * `joint_pipeline_example` - a few images from *Lost and Found*, to demonstrate the joint pipeline
   * `out` - default output location of the joint pipeline
+
+## Running the pipeline
+
+Please see the notebook <Exec_Joint_Pipeline.ipynb>:
+
+```python
+# specify input dataset, for example a directory with images
+from src.datasets.dataset import DatasetImageDir
+dset = DatasetImageDir(dir_root='data/joint_pipeline_example')
+dset.discover()
+
+# load the networks
+from src.a05_differences.E1_article_evaluation import DiscrepancyJointPipeline
+joint_pipeline = DiscrepancyJointPipeline()
+joint_pipeline.init_semseg()
+joint_pipeline.init_gan()
+joint_pipeline.init_discrepancy()
+
+# run and show results in notebook
+joint_pipeline.run_on_dset(dset, b_show=True)
+```
+
+The notebook <Exec_Evaluations.ipynb> can be used to the steps separately saving intermediate results.
+
+## Contact
+I am working to provide more examples and automated scripts.
+
+For any additional information or requests, please contact [Krzysztof Lis](mailto:krzysztof.lis@epfl.ch).
+

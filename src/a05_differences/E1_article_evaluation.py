@@ -416,22 +416,6 @@ class DiscrepancyJointPipeline:
 	def init_gan(self):
 		self.pix2pix = Pix2PixHD_Generator()
 
-		# # TODO context?
-		# self.generator = Pix2PixHD_Generator('0405_nostyle_crop_ctc')
-
-		# # self.mod_pix2pix = load_pix2pixHD_default('0405_nostyle_crop_ctc')
-		# self.mod_pix2pix.cuda()
-
-		# self.table_trainId_to_fullId = CityscapesLabelInfo.table_trainId_to_label
-		# self.table_trainId_to_fullId_cuda = torch.from_numpy(self.table_trainId_to_fullId).byte().cuda()
-
-		# self.tr_trainId_to_fullId = TrSemSegLabelTranslation(
-		# 	self.table_trainId_to_fullId,
-		# 	fields=[('pred_labels_trainIds', 'labels_source')],
-		# ),
-
-	
-
 	def tr_apply_pix2pix2(self, pred_labels_trainIds, **_):
 
 		labels = self.table_trainId_to_fullId_cuda[pred_labels_trainIds.reshape(-1).long()].reshape(pred_labels_trainIds.shape)
@@ -467,23 +451,6 @@ class DiscrepancyJointPipeline:
 			gen_image = gen_image,
 		)
 
-	# def tr_postprocess_gen_image(self, gen_image, **_):
-	# 	# gen_image = (gen_image_raw + 1) * 128
-	# 	# gen_image = gen_image.clamp(12, 254).byte()
-
-	# 	# return dict(
-	# 	# 	gen_image = gen_image_raw,
-	# 	# )
-
-	# 	# lambda gen_image, **_: dict(gen_image = gen_image.transpose([1, 2, 0])),
-
-	# 	gen_image = gen_image.transpose([1, 2, 0])
-	# 	# gen_image = np.clip(gen_image, 0, 255)
-	# 	gen_image = gen_image.astype(np.uint8)
-
-	# 	return dict(
-	# 		gen_image = gen_image,
-	# 	)
 
 	def init_discrepancy(self):
 
@@ -527,7 +494,7 @@ class DiscrepancyJointPipeline:
 	def construct_persistence(self):
 
 		# self.persistence_base_dir = '{channel.ctx.exp.workdir}/pred/{dset.name}_{dset.split}/'
-		self.workdir = DIR_EXP / '0550_real_road_data'
+		self.workdir = DIR_DATA / 'pipeline_out'
 		self.persistence_base_dir = '{channel.ctx.workdir}/pred/{dset.name}_{dset.split}/'
 
 		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'demo/{fid_no_slash}_demo.webp')
@@ -581,7 +548,7 @@ class DiscrepancyJointPipeline:
 			pipe.execute(dset, b_one_batch=True)
 
 		else:
-			
+			pipe.tr_output.append(TrChannelSave(self.chan_demo), 'demo'),
 			pipe.execute(dset, b_accumulate=False)
 	
 	
