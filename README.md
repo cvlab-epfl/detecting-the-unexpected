@@ -50,7 +50,7 @@ and place them in `detecting-the-unexpected/exp` (or another location specified 
 
 ## Running the pipeline
 
-Please see the notebook <Exec_Joint_Pipeline.ipynb>:
+Please see the notebook [Exec_Joint_Pipeline.ipynb](Exec_Joint_Pipeline.ipynb):
 
 ```python
 # specify input dataset, for example a directory with images
@@ -69,7 +69,7 @@ joint_pipeline.init_discrepancy()
 joint_pipeline.run_on_dset(dset, b_show=True)
 ```
 
-The notebook <Exec_Evaluations.ipynb> can be used to the steps separately saving intermediate results.
+The notebook [Exec_Evaluations.ipynb](Exec_Evaluations.ipynb) can be used to the steps separately saving intermediate results.
 
 ## Contact
 I am working to provide more examples and automated scripts.

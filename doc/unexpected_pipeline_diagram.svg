@@ -88,7 +88,7 @@
 			preserveAspectRatio="none"
 			height="80"
 			width="160"
-			xlink:href="pipeline_image.jpg"
+			xlink:href="doc/pipeline_image.jpg"
 			style="stroke-width:0.12579788" />
 		<path
 			id="path3960"
@@ -96,7 +96,7 @@
 			style="fill:none;stroke:#000000;stroke-width:1.36281037;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker12632)" />
 		<image
 			style="stroke-width:0.10063832"
-			xlink:href="pipeline_anomaly_p.jpg"
+			xlink:href="doc/pipeline_anomaly_p.jpg"
 			y="73.606071"
 			x="-200.91464"
 			id="image2305"
@@ -149,7 +149,7 @@
 		</g>
 		<image
 			style="stroke-width:0.12579788"
-			xlink:href="pipeline_reconstruction.jpg"
+			xlink:href="doc/pipeline_reconstruction.jpg"
 			y="48.606071"
 			x="-415.91464"
 			id="image2294"
@@ -209,7 +209,7 @@
 		</g>
 		<image
 			style="stroke-width:0.10063832"
-			xlink:href="pipeline_labels.png"
+			xlink:href="doc/pipeline_labels.png"
 			y="-31.393929"
 			x="-200.91464"
 			id="image2272"
