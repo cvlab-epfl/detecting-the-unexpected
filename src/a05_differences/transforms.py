@@ -3,8 +3,9 @@ from math import floor
 from scipy import stats
 from random import choice
 from ..paths import DIR_DATA
-from ..pipeline.transforms import *
-from ..pipeline.transforms_imgproc import *
+from ..pipeline.transforms import TrsChain
+from ..pipeline.transforms_imgproc import TrShow
+from ..datasets.dataset import imread
 from ..datasets.generic_sem_seg import TrSemSegLabelTranslation
 from ..datasets.cityscapes import CityscapesLabelInfo
 from ..a01_sem_seg.transforms import SemSegLabelsToColorImg
@@ -40,10 +41,21 @@ def tr_errors_to_gt_float(semseg_errors, labels_validEval, **_):
 
 
 try:
-	CTC_ROI = imageio.imread(DIR_DATA/'cityscapes/roi.png').astype(np.bool)
-	CTC_ROI_neg = ~CTC_ROI
-except:
-	print('Cityscapes ROI file is not present', DIR_DATA/'cityscapes/roi.png')
+	"""
+	CTC_ROI is the region of interest associated with the Cityscapes vehicle/camera setup.
+	For example, it excludes the ego vehicle from evaluation.
+	Since Lost And Found does not provide that kind of ROI, but uses a similar vehicle, we reuse the Cityscapes ROI.
+
+	By default it is stored in DIR_DATA/cityscapes/roi.png
+	"""
+	CTC_ROI_path = DIR_DATA/'cityscapes/roi.png'
+	CTC_ROI = imread(CTC_ROI_path).astype(np.bool)
+	# print(f'Cityscapes ROI loaded from {CTC_ROI_path}')
+except Exception as e:
+	print(f'Cityscapes ROI file is not present at {CTC_ROI_path}): {e}')
+	CTC_ROI = np.ones((512, 1024), dtype=np.bool)
+
+CTC_ROI_neg = ~CTC_ROI
 
 DISAPPEAR_TRAINIDS = [CityscapesLabelInfo.name2trainId[n] for n in ['person', 'rider', 'car', 'motorcycle', 'bicycle', 'traffic light', 'traffic sign']]
 
