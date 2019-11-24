@@ -5,7 +5,7 @@ from pathlib import Path
 import logging, gc
 log = logging.getLogger('exp.eval')
 
-from ..paths import DIR_EXP
+from ..paths import DIR_EXP, DIR_DATA
 from ..pipeline.config import add_experiment
 from ..pipeline.frame import Frame
 from ..pipeline.pipeline import Pipeline
@@ -398,6 +398,9 @@ class DiscrepancyJointPipeline:
 			out_name = 'demo',
 		)
 
+	def set_batch_size(self, batch_size):
+		""" call before construct_pipeline """
+		self.loader_args['batch_size'] = batch_size
 
 	def init_semseg(self):
 		self.exp_sem_seg = ExpPSP_EnsebleReuse()
@@ -415,42 +418,6 @@ class DiscrepancyJointPipeline:
 
 	def init_gan(self):
 		self.pix2pix = Pix2PixHD_Generator()
-
-	def tr_apply_pix2pix2(self, pred_labels_trainIds, **_):
-
-		labels = self.table_trainId_to_fullId_cuda[pred_labels_trainIds.reshape(-1).long()].reshape(pred_labels_trainIds.shape)
-
-		labels_onehot = torch_onehot(
-			labels,
-			num_channels=self.mod_pix2pix.opt.label_nc, 
-			dtype=torch.float32,
-		)
-
-		# labels = tr_trainId_to_fullId.forward(None, pred_labels_trainIds)
-		inst = None
-		img = None
-		# log.debug(f'labels {labels_onehot.shape} {labels_onehot.dtype}')
-
-		# log.debug(f'labels_onehot {labels_onehot.shape} {labels_onehot.dtype}')
-
-		gen_out = self.mod_pix2pix.inference(labels_onehot, inst, img)
-
-		# log.debug(f'gen out shape {gen_out.shape} from labels {labels.shape}')
-
-		desired_shape = labels_onehot.shape[2:]
-		if gen_out.shape[2:] != desired_shape:
-			gen_out = gen_out[:, :, :desired_shape[0], :desired_shape[1]]
-
-		gen_image = (gen_out + 1) * 128
-		gen_image = torch.clamp(gen_image, min=0, max=255)
-		gen_image = gen_image.type(torch.uint8)
-		# gen_image = gen_image.clamp(12, 254).byte()
-
-		return dict(
-			gen_image_raw = gen_out,
-			gen_image = gen_image,
-		)
-
 
 	def init_discrepancy(self):
 
@@ -474,21 +441,27 @@ class DiscrepancyJointPipeline:
 			pred_anomaly_prob = pred_anomaly_prob,
 		)
 
-	def tr_make_demo_2(self, image, pred_labels_trainIds_colorimg, pred_anomaly_prob, gen_image = None, **_):
+	def init_apex_optimization(self):
+		"""
+		Use the apex multi precision library to run the networks in half precision
+		which is faster and takes less memory.
+		"""
+		try:
+			import apex
 
-		EMPTY_IMG = np.zeros(image.shape, dtype=np.uint8)
+			net_mods = [
+				self.exp_sem_seg.net_mod,
+				self.exp_discrepancy.net_mod,
+			]
 
-		# labels_colorimg = self.tr_colorimg.forward(None, labels) if labels is not None else EMPTY_IMG
+			if hasattr(self, 'pix2pix'):
+				net_mods.append(self.pix2pix.mod_pix2pix)
 
-		# prob_based_img = (pred_class_trainId_colorimg.astype(np.float32) * (0.25 + 0.75*pred_class_prob[:, :, None])).astype(np.uint8)
+			apex.amp.initialize(net_mods, opt_level='O1')
+			log.info(f'APEX applied to {net_mods.__len__()} networks')
 
-		gen_image = EMPTY_IMG if gen_image is None else gen_image
-		
-		out = self.img_grid_2x2([image, pred_labels_trainIds_colorimg, gen_image, pred_anomaly_prob])
-	
-		return dict(
-			demo = out,
-		)
+		except ImportError:
+			log.warning('APEX can not be imported')
 
 
 	def construct_persistence(self):
@@ -499,6 +472,7 @@ class DiscrepancyJointPipeline:
 
 		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'demo/{fid_no_slash}_demo.webp')
 		self.chan_demo.ctx = self
+
 
 	def construct_pipeline(self):
 		self.tr_pre_batch = TrsChain(
