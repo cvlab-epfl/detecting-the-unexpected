@@ -43,7 +43,7 @@ and place them in `detecting-the-unexpected/exp` (or another location specified 
   * ...
 * `datasets` - or another location specified by env variable `DIR_DSETS`
   * `dataset_RoadAnomaly` - our dataset, [download here](https://www.epfl.ch/labs/cvlab/data/road-anomaly/)
-  * `dataset_LostAndFound/1024x512` - [Lost and Found](http://www.6d-vision.com/lostandfounddataset) but downscaled by a factor of 2
+  * `dataset_LostAndFound/1024x512` - [Lost and Found](http://www.6d-vision.com/lostandfounddataset) but [downscaled](#Datset-processing) by a factor of 2
 * `data`
   * `joint_pipeline_example` - a few images from *Lost and Found*, to demonstrate the joint pipeline
   * `out` - default output location of the joint pipeline
@@ -70,6 +70,26 @@ joint_pipeline.run_on_dset(dset, b_show=True)
 ```
 
 The notebook [Exec_Evaluations.ipynb](Exec_Evaluations.ipynb) can be used to the steps separately saving intermediate results.
+
+## Dataset processing
+
+The *Lost and Found* and *Cityscapes* datasets were used in 1024x512 resolution, while the original downloads are 2048x1024.
+The conversion can be performed with the scripts in [src/datasets/conversion_tools](src/datasets/conversion_tools).
+
+**Lost and Found**
+
+* Download the 2048x1024 dataset: `leftImg8bit.zip`  (left 8-bit images - train and test set) and `gtCoarse.zip` (annotations for train and test sets) from the [LAF site](http://www.6d-vision.com/lostandfounddataset)
+* Set `$DIR_LAF` to point to the directory of the original dataset
+* Set `$DIR_LAF_SMALL` to the place the compressed dataset should be written to
+* run [`compress_LAF_1024x512_webp.sh`](src/datasets/conversion_tools/compress_LAF_1024x512_webp.sh)
+
+** Cityscapes **
+
+* Download the 2048x1024 dataset (leftImg8bit and gtFine) from the [Cityscapes site](https://www.cityscapes-dataset.com/)
+* Set `$DIR_CITYSCAPES` to point to the directory of the original dataset
+* Set `$DIR_CITYSCAPES_SMALL` to the place the compressed dataset should be written to
+* run [`compress_Cityscapes_1024x512_webp.sh`](src/datasets/conversion_tools/compress_Cityscapes_1024x512_webp.sh)
+
 
 ## Contact
 I am working to provide more examples and automated scripts.

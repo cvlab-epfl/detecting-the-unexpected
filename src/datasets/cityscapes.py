@@ -1,4 +1,5 @@
 
+import logging
 from pathlib import Path
 import os
 from .dataset import DatasetBase, ChannelLoaderImage
@@ -9,6 +10,8 @@ from ..paths import DIR_DSETS
 from .cityscapes_labels import labels as cityscapes_labels
 CityscapesLabelInfo = DatasetLabelInfo(cityscapes_labels)
 
+log = logging.getLogger('exp')
+
 DIR_CITYSCAPES = Path(os.environ.get('DIR_CITYSCAPES', DIR_DSETS / 'dataset_Cityscapes' / '2048x1024'))
 DIR_CITYSCAPES_SMALL = Path(os.environ.get('DIR_CITYSCAPES_SMALL', DIR_DSETS / 'dataset_Cityscapes' / '1024x512'))
 
@@ -16,8 +19,9 @@ DIR_CITYSCAPES_SMALL = Path(os.environ.get('DIR_CITYSCAPES_SMALL', DIR_DSETS / '
 class DatasetCityscapes(DatasetBase):
 	name = 'cityscapes'
 	label_info = CityscapesLabelInfo
+	IMG_FORMAT_TO_CHECK = ['.png', '.webp', '.jpg']
 
-	def __init__(self, dir_root=DIR_CITYSCAPES, split='train', img_ext='.webp', b_cache=True):
+	def __init__(self, dir_root=DIR_CITYSCAPES, split='train', b_cache=True):
 		super().__init__(b_cache=b_cache)
 
 		self.dir_root = dir_root
@@ -25,7 +29,6 @@ class DatasetCityscapes(DatasetBase):
 
 		self.add_channels(
 			image = ChannelLoaderImage(
-				img_ext = img_ext,
 				file_path_tmpl = '{dset.dir_root}/images/leftImg8bit/{dset.split}/{fid}_leftImg8bit{channel.img_ext}',
 			),
 			labels_source = ChannelLoaderImage(
@@ -45,11 +48,18 @@ class DatasetCityscapes(DatasetBase):
 		)
 
 	def discover(self):
-		self.frames = self.discover_directory_by_suffix(
-			self.dir_root / 'images' / 'leftImg8bit' / self.split,
-			suffix = '_leftImg8bit' + self.channels['image'].img_ext,
-		)
+		for img_ext in self.IMG_FORMAT_TO_CHECK:
+			self.frames = self.discover_directory_by_suffix(
+				self.dir_root / 'images' / 'leftImg8bit' / self.split,
+				suffix = f'_leftImg8bit{img_ext}',
+			)
+			if self.frames:
+				log.info(f'Cityscapes: found images in {img_ext} format')
+				break
+
+		self.channels['image'].img_ext = img_ext
 		super().discover()
+
 
 class DatasetCityscapesSmall(DatasetCityscapes):
 	def __init__(self, dir_root=DIR_CITYSCAPES_SMALL, split='train', b_cache=True):

@@ -1,9 +1,12 @@
 
+import logging
 from pathlib import Path
 import numpy as np
 import os, re
-from .dataset import DatasetBase, ChannelLoaderHDF5, imread
-from ..paths import DIR_DSETS
+from .dataset import DatasetBase, ChannelLoaderImage, ChannelLoaderHDF5, imread
+from ..paths import DIR_DSETS, DIR_DATA
+
+log = logging.getLogger('exp')
 
 DIR_LOST_AND_FOUND = Path(os.environ.get('DIR_LAF', DIR_DSETS / 'dataset_LostAndFound' / '2048x1024'))
 DIR_LOST_AND_FOUND_SMALL = Path(os.environ.get('DIR_LAF_SMALL', DIR_DSETS / 'dataset_LostAndFound' / '1024x512'))
@@ -18,7 +21,9 @@ class DatasetLostAndFound(DatasetBase):
 
 	name = 'lost_and_found'
 
-	def __init__(self, dir_root=DIR_LOST_AND_FOUND, split='train', img_ext='.png', only_interesting=True, only_valid=True, b_cache=True):
+	IMG_FORMAT_TO_CHECK = ['.png', '.webp', '.jpg']
+
+	def __init__(self, dir_root=DIR_LOST_AND_FOUND, split='train', only_interesting=True, only_valid=True, b_cache=True):
 		"""
 		:param split: Available splits: "train", "test"
 		:param only_interesting: means we only take the last frame from each sequence:
@@ -26,14 +31,13 @@ class DatasetLostAndFound(DatasetBase):
 		"""
 		super().__init__(b_cache=b_cache)
 
-		self.dir_root = dir_root
+		self.dir_root = Path(dir_root)
 		self.split = split
 		self.only_interesting = only_interesting
 		self.only_valid = only_valid
 
 		self.add_channels(
 			image = ChannelLoaderImage(
-				img_ext = img_ext,
 				file_path_tmpl = '{dset.dir_root}/leftImg8bit/{dset.split}/{fid}_leftImg8bit{channel.img_ext}',
 			),
 			labels_source = ChannelLoaderImage(
@@ -45,12 +49,6 @@ class DatasetLostAndFound(DatasetBase):
 				file_path_tmpl = '{dset.dir_root}/gtCoarse/{dset.split}/{fid}_gtCoarse_instanceIds{channel.img_ext}',
 			),
 		)
-
-		# LAF's PNG images contain a gamma value which makes them washed out, ignore it
-		if img_ext == '.png':
-			self.channels['image'].opts['ignoregamma'] = True
-
-		#self.tr_post_load_pre_cache.append()
 
 	def load_roi(self):
 		"""
@@ -73,10 +71,20 @@ class DatasetLostAndFound(DatasetBase):
 		return dset.dir_root / 'gtCoarse' / dset.split
 
 	def discover(self):
-		self.frames_all = self.discover_directory_by_suffix(
-			self.dir_root / 'leftImg8bit' / self.split,
-			suffix = '_leftImg8bit' + self.channels['image'].img_ext,
-		)
+		for img_ext in self.IMG_FORMAT_TO_CHECK:
+			self.frames_all = self.discover_directory_by_suffix(
+				self.dir_root / 'leftImg8bit' / self.split,
+				suffix = f'_leftImg8bit{img_ext}',
+			)
+			if self.frames_all:
+				log.info(f'LAF: found images in {img_ext} format')
+				break
+
+		self.channels['image'].img_ext = img_ext
+
+		# LAF's PNG images contain a gamma value which makes them washed out, ignore it
+		if img_ext == '.png':
+			self.channels['image'].opts['ignoregamma'] = True
 
 		# parse names to determine scenes, sequences and timestamps
 		for fr in self.frames_all:
@@ -135,20 +143,11 @@ class DatasetLostAndFound(DatasetBase):
 		self.frames = self.frames_interesting if only_interesting else self.frames_all
 
 class DatasetLostAndFoundSmall(DatasetLostAndFound):
-	def __init__(self, dir_root=DIR_LOST_AND_FOUND_SMALL, img_ext='.jpg', **kwargs):
-		super().__init__(dir_root=dir_root, img_ext=img_ext, **kwargs)
+	def __init__(self, dir_root=DIR_LOST_AND_FOUND_SMALL, **kwargs):
+		super().__init__(dir_root=dir_root, **kwargs)
 
-	# def get_roi(self):
-	# 	return imread(DIR_DATA / 'cityscapes/roi.png').astype(np.bool)
-
-
-# class DatasetLostAndFoundWithSemantics(DatasetLostAndFoundSmall):
-# 	def __init__(self, dir_semantics=None, **other):
-# 		super().__init__(**other)
-# 		self.dir_semantics = dir_semantics
-# 		self.add_channels(
-# 			labels_semantic = ChannelLoaderImage(
-# 				img_ext = '.png',
-# 				file_path_tmpl = '{dset.dir_semantics}/{dset.split}/{fid}_trainIds{channel.img_ext}',
-# 			),
-# 		)
+	def load_roi(self):
+		"""
+		Load a ROI which excludes the ego-vehicle and registration artifacts
+		"""
+		self.roi = imread(DIR_DATA / 'cityscapes/roi.png').astype(np.bool)
