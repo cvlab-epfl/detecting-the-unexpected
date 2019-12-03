@@ -268,7 +268,7 @@ class ChannelLoaderFileCollection:
 			return template(dset=dset, channel=self, frame=frame, fid=frame['fid'])
 
 	def resolve_file_path(self, dset, frame):
-		return self.resolve_template(self.file_path_tmpl, dset, frame)
+		return Path(self.resolve_template(self.file_path_tmpl, dset, frame))
 
 	def load(self, dset, frame, field_name):
 		path = self.resolve_file_path(dset, frame)
@@ -373,13 +373,15 @@ class ChannelLoaderNpyShared(ChannelLoaderFileCollection):
 		frame[field_name] = fvalue[index]
 
 
-class ChannelLoaderHDF5(ChannelLoaderFileCollection):
-	def __init__(self, file_path_tmpl, var_name_tmpl='{fid}/{field_name}', index_func=None, compression=None):
+class ChannelLoaderHDF5_Base(ChannelLoaderFileCollection):
+	def __init__(self, file_path_tmpl, var_name_tmpl='{fid}/{field_name}', index_func=None, compression=None, write_as_type=None, read_as_type=None):
 		super().__init__(file_path_tmpl)
 
 		self.var_name_tmpl = var_name_tmpl
 		self.index_func = index_func
 		self.compression = compression
+		self.write_as_type = write_as_type
+		self.read_as_type = read_as_type
 
 	def resolve_var_name(self, dset, frame, field_name):
 		return self.var_name_tmpl.format(dset=dset, channel=self, frame=frame, fid=frame['fid'], field=field_name)
@@ -397,24 +399,29 @@ class ChannelLoaderHDF5(ChannelLoaderFileCollection):
 		else:
 			return variable
 
-	def load(self, dset, frame, field_name):
-		hdf5_file_path = self.resolve_file_path(dset, frame)
-		hdf5_file_handle = dset.get_hdf5_file(hdf5_file_path, write=False)
+	def load_from_handle(self, dset, frame, field_name, hdf5_file_handle):
 		var_name = self.resolve_var_name(dset, frame, field_name)
 		if self.index_func:
 			index = self.resolve_index(dset, frame, field_name)
-			frame[field_name] = self.read_hdf5_variable(hdf5_file_handle[var_name][index])
+			value = self.read_hdf5_variable(hdf5_file_handle[var_name][index])
 		else:
 			try:
-				frame[field_name] = self.read_hdf5_variable(hdf5_file_handle[var_name])
+				value = self.read_hdf5_variable(hdf5_file_handle[var_name])
 			except KeyError as e:
 				raise KeyError(f'Failed to read {var_name} from {hdf5_file_path}: {e}')
+		
+		if self.read_as_type:
+			value = value.astype(self.read_as_type)
 
-	def save(self, dset, frame, field_name):
-		hdf5_file_path = self.resolve_file_path(dset, frame)
-		hdf5_file_handle = dset.get_hdf5_file(hdf5_file_path, write=True)
+		frame[field_name] = value
+
+
+	def save_to_handle(self, dset, frame, field_name, hdf5_file_handle):
 		var_name = self.resolve_var_name(dset, frame, field_name)
 		value_to_write = frame[field_name]
+
+		if self.write_as_type:
+			value_to_write = value_to_write.astype(self.write_as_type)
 
 		if var_name in hdf5_file_handle:
 			if self.index_func:
@@ -427,10 +434,33 @@ class ChannelLoaderHDF5(ChannelLoaderFileCollection):
 				raise NotImplementedError('Writing to new HDF5 dataset with index_func')
 
 			hdf5_file_handle.create_dataset(var_name, data=value_to_write, compression=self.compression)
-			#hdf5_file_handle[var_name] = value_to_write
 
-		#except Exception as e:
-		#	print('HDF5 bla bla, key=', hdf5_path, '\n', e)
+
+class ChannelLoaderHDF5(ChannelLoaderHDF5_Base):
+	""" shared """
+	def load(self, dset, frame, field_name):
+		hdf5_file_path = self.resolve_file_path(dset, frame)
+		hdf5_file_handle = dset.get_hdf5_file(hdf5_file_path, write=False)
+		self.load_from_handle(dset, frame, field_name, hdf5_file_handle=hdf5_file_handle)
+		
+	def save(self, dset, frame, field_name):
+		hdf5_file_path = self.resolve_file_path(dset, frame)
+		hdf5_file_handle = dset.get_hdf5_file(hdf5_file_path, write=True)
+		self.save_to_handle(dset, frame, field_name, hdf5_file_handle=hdf5_file_handle)
+
+
+class ChannelLoaderHDF5_NotShared(ChannelLoaderHDF5_Base):
+	""" shared """
+	def load(self, dset, frame, field_name):
+		hdf5_file_path = self.resolve_file_path(dset, frame)
+		with h5py.File(hdf5_file_path, 'r') as hdf5_file_handle:
+			self.load_from_handle(dset, frame, field_name, hdf5_file_handle=hdf5_file_handle)
+		
+	def save(self, dset, frame, field_name):
+		hdf5_file_path = self.resolve_file_path(dset, frame)
+		hdf5_file_path.parent.mkdir(exist_ok=True, parents=True)
+		with h5py.File(hdf5_file_path, 'w') as hdf5_file_handle:
+			self.save_to_handle(dset, frame, field_name, hdf5_file_handle=hdf5_file_handle)
 
 
 class ChannelResultImage(ChannelLoaderImage):
@@ -464,6 +494,8 @@ def listdir_recursive(base_dir, ext=None, relative_paths=False):
 
 
 class DatasetImageDir(DatasetBase):
+	split = 'nosplit'
+
 	def __init__(self, dir_root, img_ext='.jpg', name=None, split='', **kw):
 		super().__init__(**kw)
 

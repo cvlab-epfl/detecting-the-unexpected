@@ -13,7 +13,7 @@ from ..pipeline.evaluations import Evaluation, TrChannelLoad, TrChannelSave
 from ..pipeline.transforms import TrByField, TrBase, TrsChain, TrKeepFields, TrAsType, TrKeepFieldsByPrefix, tr_print, TrRenameKw
 from ..pipeline.transforms_imgproc import TrZeroCenterImgs, TrShow
 from ..pipeline.transforms_pytorch import tr_torch_images, TrCUDA, TrNP, torch_onehot
-from ..datasets.dataset import imwrite, ImageBackgroundService, ChannelLoaderImage, ChannelLoaderHDF5
+from ..datasets.dataset import imwrite, ImageBackgroundService, ChannelLoaderImage, ChannelLoaderHDF5, ChannelLoaderHDF5_NotShared
 from ..datasets.generic_sem_seg import TrSemSegLabelTranslation
 from ..datasets.cityscapes import CityscapesLabelInfo
 
@@ -26,72 +26,69 @@ from ..a05_road_rec_baseline.experiments import Exp0525_RoadReconstructionRBM_Lo
 from .E0_article_evaluation import get_anomaly_net
 from .E1_plot_utils import TrImgGrid, TrBlend, tr_draw_anomaly_contour
 
-class EvaluationSemSeg(Evaluation):
-	def __init__(self, exp):
-		super().__init__(exp)
+# class EvaluationSemSeg(Evaluation):
+# 	def __init__(self, exp):
+# 		super().__init__(exp)
 
-		self.tr_colorimg = TrColorimg('pred_labels')
-		self.tr_colorimg_gt = TrColorimg('labels')
+# 		self.tr_colorimg = TrColorimg('pred_labels')
+# 		self.tr_colorimg_gt = TrColorimg('labels')
 
-		self.tr_make_demo = TrImgGrid(
-			['image', None, 'labels_colorimg', 'pred_labels_colorimg'],
-			num_cols = 2,
-			out_name = 'demo_semseg',
-		)
+# 		self.tr_make_demo = TrImgGrid(
+# 			['image', None, 'labels_colorimg', 'pred_labels_colorimg'],
+# 			num_cols = 2,
+# 			out_name = 'demo_semseg',
+# 		)
 
-	def construct_persistence(self):
-		self.persistence_base_dir = '{channel.ctx.workdir}/{dset.name}_{dset.split}/'
+# 	def construct_persistence(self):
+# 		self.persistence_base_dir = '{channel.ctx.workdir}/{dset.name}_{dset.split}/'
 
-		self.chan_pred_trainId = ChannelLoaderImage(self.persistence_base_dir+'semantic/{fid_no_slash}_predTrainId.png')
-		self.chan_pred_trainId.ctx = self
-		self.chan_pred_colorimg = ChannelLoaderImage(self.persistence_base_dir+'semantic/{fid_no_slash}_colorimg.png')
-		self.chan_pred_colorimg.ctx = self
-		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'semantic/demo/{fid_no_slash}_demo.webp')
-		self.chan_demo.ctx = self
+# 		self.chan_pred_trainId = ChannelLoaderImage(self.persistence_base_dir+'semantic/{fid_no_slash}_predTrainId.png'),
+# 		self.chan_pred_trainId.ctx = self
+# 		self.chan_pred_colorimg = ChannelLoaderImage(self.persistence_base_dir+'semantic/{fid_no_slash}_colorimg.png')
+# 		self.chan_pred_colorimg.ctx = self
+# 		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'semantic/demo/{fid_no_slash}_demo.webp')
+# 		self.chan_demo.ctx = self
 
-	def construct_transforms(self, dset):
-		self.tr_output = TrsChain(
-			self.tr_colorimg,
-			self.tr_colorimg_gt,
-			self.tr_make_demo,
-			TrChannelSave(self.chan_pred_trainId, 'pred_labels'),
-			TrChannelSave(self.chan_pred_colorimg, 'pred_labels_colorimg'),
-			TrChannelSave(self.chan_demo, 'demo'),
-		)
-
-
-class EvaluationSemSegWithUncertainty(EvaluationSemSeg):
-	def __init__(self, exp):
-		super().__init__(exp)
-
-		self.tr_make_demo = TrImgGrid(
-			['image', self.exp.uncertainty_field_name, 'labels_colorimg', 'pred_labels_colorimg'],
-			num_cols = 2,
-			out_name = 'demo',
-		)
-
-	def construct_persistence(self):
-		super().construct_persistence()
-
-		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'anomaly/demo/{fid_no_slash}_anomaly_demo.webp')
-		self.chan_demo.ctx = self
-
-		self.chan_uncertainty = ChannelLoaderHDF5(
-			self.persistence_base_dir+'anomaly/anomaly_score.hdf5',
-			'{fid}',
-			compression=6,
-		)
-		self.chan_uncertainty.ctx = self
-
-	def construct_transforms(self, dset):
-		super().construct_transforms(dset)
-
-		self.tr_output.append(
-			TrChannelSave(self.chan_uncertainty, self.exp.uncertainty_field_name),
-		)
+# 	def construct_transforms(self, dset):
+# 		self.tr_output = TrsChain(
+# 			self.tr_colorimg,
+# 			self.tr_colorimg_gt,
+# 			self.tr_make_demo,
+# 			TrChannelSave(self.chan_pred_trainId, 'pred_labels'),
+# 			TrChannelSave(self.chan_pred_colorimg, 'pred_labels_colorimg'),
+# 			TrChannelSave(self.chan_demo, 'demo'),
+# 		)
 
 
+# class EvaluationSemSegWithUncertainty(EvaluationSemSeg):
+# 	def __init__(self, exp):
+# 		super().__init__(exp)
 
+# 		self.tr_make_demo = TrImgGrid(
+# 			['image', self.exp.uncertainty_field_name, 'labels_colorimg', 'pred_labels_colorimg'],
+# 			num_cols = 2,
+# 			out_name = 'demo',
+# 		)
+
+# 	def construct_persistence(self):
+# 		super().construct_persistence()
+
+# 		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'anomaly/demo/{fid_no_slash}_anomaly_demo.webp')
+# 		self.chan_demo.ctx = self
+
+# 		self.chan_uncertainty = ChannelLoaderHDF5(
+# 			self.persistence_base_dir+'anomaly/anomaly_score.hdf5',
+# 			'{fid}',
+# 			compression=6,
+# 		)
+# 		self.chan_uncertainty.ctx = self
+
+# 	def construct_transforms(self, dset):
+# 		super().construct_transforms(dset)
+
+# 		self.tr_output.append(
+# 			TrChannelSave(self.chan_uncertainty, self.exp.uncertainty_field_name),
+# 		)
 
 # 	def tr_make_demo(self, image, pred_labels_colorimg, labels = None, **_):
 # 	#def out_demo(fid, dset, image, pred_class_trainId_colorimg, pred_class_by_bitstring_trainId_colorimg, pred_class_prob, labels_colorimg=None, **_):
@@ -129,6 +126,8 @@ class EvaluationDetectingUnexpected:
 
 	def __init__(self, sem_seg_variant):
 
+		self.workdir =  DIR_EXP / '05_Eval'
+
 		self.sem_seg_variant = sem_seg_variant
 		self.uncertainty_variant = self.SEM_SEG_UNCERTAINTY_NAMES[self.sem_seg_variant]
 		self.anomaly_detector_variants = (
@@ -145,18 +144,24 @@ class EvaluationDetectingUnexpected:
 		Storage locations for results and intermediate data
 		"""
 
-		out_dir_default = DIR_EXP / '05_Eval' / '{dset.name}_{dset.split}' / f'sem_{self.sem_seg_variant}'
+		out_dir_default = Path('{channel.ctx.workdir}') / '{dset.name}_{dset.split}' / f'sem_{self.sem_seg_variant}'
 		out_dir = Path(out_dir_override or out_dir_default)
 
+		# outputs of the pipelines steps: 
 		self.storage = dict(
+			# semantic segmentation
 			pred_labels_trainIds = ChannelLoaderImage(out_dir / 'sem_labels/{fid}_predTrainIds.png'),
 			pred_labels_colorimg = ChannelLoaderImage(out_dir / 'sem_labels/{fid}_predColorImg.png'),
+
+			# synthesized image
 			gen_image = ChannelLoaderImage(out_dir / 'gen_image/{fid}_gen_image.webp'),
 
+			# overview
 			demo_with_labels = ChannelLoaderImage(out_dir / 'demo/{fid_no_slash}_pipeline.webp'),
 			demo_with_baselines = ChannelLoaderImage(out_dir / 'demo/{fid_no_slash}_scores.webp'),
 		)
 
+		# anomaly/discrepancy scores
 		self.storage.update({
 			f'anomaly_{name}': ChannelLoaderHDF5(
 				out_dir / f'anomaly_score/anomaly_{name}.hdf5',
@@ -165,6 +170,8 @@ class EvaluationDetectingUnexpected:
 			)
 			for name in self.anomaly_detector_variants
 		})
+
+		for c in self.storage.values(): c.ctx = self
 
 
 	def init_semseg(self):
@@ -380,6 +387,8 @@ class ExpPSP_EnsebleReuse(ExpSemSegPSP):
 
 class DiscrepancyJointPipeline:
 
+	name = '0550_DetectingTheUnexpected_FullPipeline'
+
 	def __init__(self):
 		self.construct_persistence()
 
@@ -413,7 +422,7 @@ class DiscrepancyJointPipeline:
 		_, class_id = torch.max(logits, 1)
 
 		return dict(
-			pred_labels_trainIds = class_id,
+			pred_labels_trainIds = class_id.byte(),
 		)
 
 	def init_gan(self):
@@ -463,16 +472,33 @@ class DiscrepancyJointPipeline:
 		except ImportError:
 			log.warning('APEX can not be imported')
 
-
-	def construct_persistence(self):
-
+	def construct_persistence(self, dir_data=DIR_DATA):
 		# self.persistence_base_dir = '{channel.ctx.exp.workdir}/pred/{dset.name}_{dset.split}/'
-		self.workdir = DIR_DATA / 'pipeline_out'
-		self.persistence_base_dir = '{channel.ctx.workdir}/pred/{dset.name}_{dset.split}/'
+		self.workdir = dir_data / self.name
+		out_dir = Path('{channel.ctx.workdir}/pred/{dset.name}_{dset.split}')
+		self.persistence_base_dir = out_dir
 
-		self.chan_demo = ChannelLoaderImage(self.persistence_base_dir+'demo/{fid_no_slash}_demo.webp')
-		self.chan_demo.ctx = self
+		self.storage = dict(
+			pred_labels_trainIds = ChannelLoaderImage(out_dir / 'sem_labels/{fid_no_slash}_predTrainIds.png'),
+			pred_labels_colorimg = ChannelLoaderImage(out_dir / 'sem_labels/{fid_no_slash}_predColorImg.png'),
+			gen_image = ChannelLoaderImage(out_dir / 'gen_image/{fid_no_slash}_gen_image.webp'),
+			discrepancy = ChannelLoaderHDF5_NotShared(
+				file_path_tmpl = out_dir / 'discrepancy/{fid_no_slash}_discrepancy.hdf5', 
+				var_name_tmpl = 'discrepancy',
+				write_as_type = np.float16, read_as_type = np.float32,
+			),
+			demo = ChannelLoaderImage(out_dir / 'demo/{fid_no_slash}_demo.webp'),
+		)
+		for c in self.storage.values():
+			c.ctx = self
 
+		self.tr_save_results = TrsChain(
+			TrChannelSave(self.storage['pred_labels_trainIds'], 'pred_labels_trainIds'),
+			TrChannelSave(self.storage['pred_labels_colorimg'], 'pred_labels_trainIds_colorimg'),
+			TrChannelSave(self.storage['gen_image'], 'gen_image'),
+			TrChannelSave(self.storage['discrepancy'], 'pred_anomaly_prob'),
+			TrChannelSave(self.storage['demo'], 'demo'),
+		)
 
 	def construct_pipeline(self):
 		self.tr_pre_batch = TrsChain(
@@ -484,8 +510,6 @@ class DiscrepancyJointPipeline:
 		self.tr_colorimg = TrColorimg('pred_labels_trainIds')
 		self.tr_colorimg.set_override(19, [0, 0, 0])
 
-		# self.tr_onehot = TrOnehotTorch(pred_labels_trainIds)
-
 		return Pipeline(
 			tr_input = TrsChain(),
 			tr_batch_pre_merge = self.tr_pre_batch,
@@ -494,23 +518,18 @@ class DiscrepancyJointPipeline:
 				self.tr_apply_semseg,
 				self.pix2pix.tr_generator,
 				self.tr_apply_discrepancy,
-				# self.tr_postprocess_gen_image,
 				TrKeepFields('gen_image', 'pred_anomaly_prob', 'pred_labels_trainIds'),
 			),
 			tr_output = TrsChain(
 				TrNP(),
 				self.tr_colorimg,
-				# self.tr_postprocess_gen_image,
 				lambda gen_image, **_: dict(gen_image = gen_image.transpose([1, 2, 0])),
-				# TrShow('gen_image'),
-				# TrShow('pred_labels_trainIds_colorimg'),
-				# TrShow('pred_anomaly_prob'),
 				self.tr_make_demo,
 			),
 			loader_args =self.loader_args,
 		)
 
-	def run_on_dset(self, dset, b_show=False):
+	def run_on_dset(self, dset, b_show=False, **exec_kwargs):
 		"""
 		@param b_show: runs only one batch and displays the result in the notebook
 		"""
@@ -519,15 +538,17 @@ class DiscrepancyJointPipeline:
 		
 		if b_show:
 			pipe.tr_output.append(TrShow('demo'))
-			pipe.execute(dset, b_one_batch=True)
+			pipe.execute(dset, b_one_batch=True, **exec_kwargs)
 
 		else:
-			pipe.tr_output.append(TrChannelSave(self.chan_demo), 'demo'),
-			pipe.execute(dset, b_accumulate=False)
-	
+			pipe.tr_output.append(self.tr_save_results)
+			pipe.execute(dset, b_accumulate=False, **exec_kwargs)
 	
 
 class DiscrepancyJointPipeline_LabelsOnly(DiscrepancyJointPipeline):
+
+	name = '0551_DetectingTheUnexpected_LabelsOnly'
+
 	def init_discrepancy(self):
 		self.exp_discrepancy = Exp0517_Diff_SwapFgd_ImgVsLabels_semGT()
 		self.exp_discrepancy.init_net('eval')
@@ -551,14 +572,12 @@ class DiscrepancyJointPipeline_LabelsOnly(DiscrepancyJointPipeline):
 				TrCUDA(),
 				self.tr_apply_semseg,
 				self.tr_apply_discrepancy,
-				tr_print,
 				TrKeepFields('pred_anomaly_prob', 'pred_labels_trainIds'),
 			),
 			tr_output = TrsChain(
 				TrNP(),
 				self.tr_colorimg,
 				self.tr_make_demo,
-				TrChannelSave(self.chan_demo, 'demo'),
 			),
 			loader_args =self.loader_args,
 		)
