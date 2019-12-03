@@ -10,7 +10,7 @@ from ..pipeline.config import add_experiment
 from ..pipeline.frame import Frame
 from ..pipeline.pipeline import Pipeline
 from ..pipeline.evaluations import Evaluation, TrChannelLoad, TrChannelSave
-from ..pipeline.transforms import TrByField, TrBase, TrsChain, TrKeepFields, TrAsType, TrKeepFieldsByPrefix, tr_print, TrRenameKw
+from ..pipeline.transforms import TrByField, TrBase, TrsChain, TrKeepFields, TrAsType, TrKeepFieldsByPrefix, tr_print, TrRenameKw, TrRemoveFields
 from ..pipeline.transforms_imgproc import TrZeroCenterImgs, TrShow
 from ..pipeline.transforms_pytorch import tr_torch_images, TrCUDA, TrNP, torch_onehot
 from ..datasets.dataset import imwrite, ImageBackgroundService, ChannelLoaderImage, ChannelLoaderHDF5, ChannelLoaderHDF5_NotShared
@@ -126,7 +126,7 @@ class EvaluationDetectingUnexpected:
 
 	def __init__(self, sem_seg_variant):
 
-		self.workdir =  DIR_EXP / '05_Eval'
+		self.workdir =  DIR_EXP / '0500_Eval'
 
 		self.sem_seg_variant = sem_seg_variant
 		self.uncertainty_variant = self.SEM_SEG_UNCERTAINTY_NAMES[self.sem_seg_variant]
@@ -166,7 +166,8 @@ class EvaluationDetectingUnexpected:
 			f'anomaly_{name}': ChannelLoaderHDF5(
 				out_dir / f'anomaly_score/anomaly_{name}.hdf5',
 				'{fid}',
-				compression=6,
+				write_as_type = np.float16,
+				read_as_type = np.float32,
 			)
 			for name in self.anomaly_detector_variants
 		})
@@ -179,11 +180,11 @@ class EvaluationDetectingUnexpected:
 			exp = ExpSemSegBayes_BDD()
 			exp.init_net('eval')
 
-			anomaly_field_name = 'anomaly_dropout'
+			uncertainty_field_name = 'anomaly_dropout'
 
 			tr_renames = TrRenameKw(
 				pred_labels = 'pred_labels_trainIds', 
-				pred_var_dropout = anomaly_field_name,
+				pred_var_dropout = uncertainty_field_name,
 			)
 
 		elif self.sem_seg_variant == 'PSPEnsBdd':
@@ -191,11 +192,11 @@ class EvaluationDetectingUnexpected:
 			exp.load_subexps()
 			exp.init_net('master_eval')
 
-			anomaly_field_name = 'anomaly_ensemble'
+			uncertainty_field_name = 'anomaly_ensemble'
 
 			tr_renames = TrRenameKw(
 				pred_labels = 'pred_labels_trainIds', 
-				pred_var_ensemble = anomaly_field_name,
+				pred_var_ensemble = uncertainty_field_name,
 			)
 			
 		else:
@@ -204,7 +205,7 @@ class EvaluationDetectingUnexpected:
 		tr_write_results = TrsChain(
 			TrChannelSave(self.storage['pred_labels_trainIds'], 'pred_labels_trainIds'),
 			TrChannelSave(self.storage['pred_labels_colorimg'], 'pred_labels_colorimg'),
-			TrChannelSave(self.storage[anomaly_field_name], anomaly_field_name)
+			TrChannelSave(self.storage[uncertainty_field_name], uncertainty_field_name)
 		)
 
 		exp.tr_out_for_eval = TrsChain(
@@ -214,11 +215,11 @@ class EvaluationDetectingUnexpected:
 
 		tr_show_results = TrsChain(
 			# TrImgGrid(
-			# 	['image', anomaly_field_name, 'labels_colorimg', 'pred_labels_colorimg'],
+			# 	['image', uncertainty_field_name, 'labels_colorimg', 'pred_labels_colorimg'],
 			# 	num_cols = 2,
 			# 	out_name = 'demo',
 			# ),
-			TrShow(['image', anomaly_field_name], ['labels_colorimg', 'pred_labels_colorimg']),
+			TrShow(['image', uncertainty_field_name], ['labels_colorimg', 'pred_labels_colorimg']),
 		)
 
 		exp.tr_out_for_eval_show = TrsChain(
@@ -325,12 +326,14 @@ class EvaluationDetectingUnexpected:
 	def run_demo_imgs(self, dset, b_show=False):
 
 		tr_make_demo_imgs = TrsChain(
+			TrChannelLoad('image', 'image'),
+			TrChannelLoad('labels_source', 'labels_source'),
+			dset.tr_get_anomaly_gt,
 			TrChannelLoad(self.storage['pred_labels_trainIds'], 'pred_labels_trainIds'),
 			TrChannelLoad(self.storage['gen_image'], 'gen_image'),
 			TrChannelLoad(self.storage['anomaly_discrepancy_label_and_gen'], 'anomaly_discrepancy_label_and_gen'),
 			TrChannelLoad(self.storage[f'anomaly_{self.uncertainty_variant}'], 'anomaly_uncertainty'),
 			TrChannelLoad(self.storage['anomaly_rbm'], 'anomaly_rbm'),
-			dset.tr_get_anomaly_gt,
 			tr_draw_anomaly_contour,
 			SemSegLabelsToColorImg([('pred_labels_trainIds', 'pred_labels_colorimg')]),
 		)
@@ -365,8 +368,17 @@ class EvaluationDetectingUnexpected:
 			tr_make_demo_imgs += [
 				TrChannelSave(self.storage['demo_with_labels'], 'demo_with_labels'),
 				TrChannelSave(self.storage['demo_with_baselines'], 'demo_with_baselines'),
+				# demo images are a cpu-bound operation, so we want to run with multiprocessing
+				# the dset object contains HDF5 handles, which can not be sent between processes
+				# so we remove them before results are sent back
+				#TrRemoveFields('dset'), 
+				# even better, send nothing back
+				TrKeepFields(), 
 			]
-			Frame.frame_list_apply(tr_make_demo_imgs, dset, n_threads=6, batch=4)
+			Frame.frame_list_apply(tr_make_demo_imgs, dset.frames, n_proc=8, batch=4)
+
+		# def run_roc_curves(self, dset):
+			
 
 
 class ExpPSP_EnsebleReuse(ExpSemSegPSP):
