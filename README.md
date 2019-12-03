@@ -77,6 +77,7 @@ The *Lost and Found* and *Cityscapes* datasets were used in 1024x512 resolution,
 The conversion can be performed with the scripts in [src/datasets/conversion_tools](src/datasets/conversion_tools).
 
 The script needs a [webp encoder](https://anaconda.org/conda-forge/libwebp) and [imagemagick](https://imagemagick.org/index.php).
+On Windows the ImageMagick binary is called `magick` instead of `convert`, so there is a slightly different version of the scripts for this OS.
 
 **Lost and Found**
 

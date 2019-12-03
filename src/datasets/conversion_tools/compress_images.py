@@ -1,12 +1,19 @@
 
 from pathlib import Path
 import click
-import asyncio
+import asyncio, sys
 from tqdm import tqdm
 import logging
 
 log = logging.getLogger('compress_images')
 log.setLevel(logging.DEBUG)
+
+
+def asyncio_loop():
+	if sys.platform == 'win32':
+		asyncio.set_event_loop(asyncio.ProactorEventLoop())
+	
+	return asyncio.get_event_loop()
 
 def async_map(func, tasks, num_concurrent=4):
 
@@ -33,7 +40,7 @@ def async_map(func, tasks, num_concurrent=4):
 		*( async_worker() for i in range(num_concurrent))
 	)
 
-	asyncio.get_event_loop().run_until_complete(joint_future)
+	asyncio_loop().run_until_complete(joint_future)
 	pbar.close()
 
 	return results
