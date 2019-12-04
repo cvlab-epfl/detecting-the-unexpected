@@ -29,11 +29,15 @@ IMWRITE_OPTS = dict(
 )
 
 def imwrite(path, data):
-	path = Path(path)
-	Image.fromarray(data).save(
-		path, 
-		**IMWRITE_OPTS.get(path.suffix.lower()[1:], {}),
-	)
+	# image saving is done asynchronously, so to see the exception we put it in the log
+	try:
+		path = Path(path)
+		Image.fromarray(data).save(
+			path, 
+			**IMWRITE_OPTS.get(path.suffix.lower()[1:], {}),
+		)
+	except Exception:
+		log.exception(f'Error in saving image {path}')
 
 LOCK_HDF_CREATION = threading.Lock()
 
