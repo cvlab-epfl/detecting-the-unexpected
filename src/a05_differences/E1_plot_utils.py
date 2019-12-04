@@ -1,8 +1,11 @@
+from pathlib import Path
 import numpy as np
 import cv2 as cv
+from matplotlib import pyplot as plt
 from ..common.jupyter_show_image import adapt_img_data
 from ..pipeline.transforms import TrBase
 from ..pipeline.transforms_imgproc import TrShow
+from .metrics import roc_plot_additive
 
 import torch
 def ensure_numpy_image(img):
@@ -94,3 +97,45 @@ def tr_draw_anomaly_contour(image, anomaly_gt, **_):
 		anomaly_contour = img_with_gt_contours,
 	)
 
+def draw_rocinfos(rocinfos, save=None, title=None, max_fpr=None, figsize=(400, 400)):
+	"""
+
+	"""
+	# can pass rocinfo_by_variant dict here
+	if isinstance(rocinfos, dict):
+		rocinfos = list(rocinfos.values())
+
+	dpi = 96
+	fig, plot = plt.subplots(1, figsize=tuple(s/dpi for s in figsize), dpi=dpi)
+
+	areas = []
+	for rocinfo in rocinfos:
+		label = rocinfo.get('plot_label', rocinfo['name'])
+		fmt = rocinfo.get('plot_fmt', None)
+		aoc = roc_plot_additive(rocinfo, label=label, plot=plot, fmt=fmt)
+		areas.append(aoc)
+
+	plot.set_xlabel('false positive rate')
+	plot.set_ylabel('true positive rate')
+
+	if max_fpr is not None:
+		plot.set_xlim([0, max_fpr])
+
+	if title:
+		plot.set_title(title)
+
+	permutation = np.argsort(areas)[::-1]
+	handles, labels = plot.get_legend_handles_labels()
+	handles = [handles[i] for i in permutation]
+	labels = [labels[i] for i in permutation]
+
+	legend = plot.legend(handles, labels, loc=(0.2, 0.05))
+
+	fig.tight_layout()
+
+	if save:
+		save = Path(save)
+		fig.savefig(save.with_suffix('.png'))
+		fig.savefig(save.with_suffix('.pdf'))
+
+	return fig

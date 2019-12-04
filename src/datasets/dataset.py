@@ -39,6 +39,41 @@ def imwrite(path, data):
 	except Exception:
 		log.exception(f'Error in saving image {path}')
 
+
+def hdf5_write_recursive(handle, subpath, data):
+	if isinstance(data, dict):
+		g = handle.require_group(subpath)
+		for name, value in data.items():
+			hdf5_write_recursive(g, name, value)
+	elif isinstance(data, str):
+		handle.attrs[subpath] = data
+	else:
+		handle[subpath] = data
+
+def hdf5_write(path, data):
+	with h5py.File(path, 'w') as file:
+		for name, value in data.items():
+			hdf5_write_recursive(file, name, value)
+
+def hdf5_read_recursive(group):
+	# string data
+	value_dict = dict(group.attrs)
+	
+	# subgroups and numerics
+	for k, obj in group.items():
+		if isinstance(obj, h5py.Group):
+			val = hdf5_read_recursive(obj)
+		elif isinstance(obj, h5py.Dataset):
+			val = obj[()]
+
+		value_dict[k] = val
+
+	return value_dict
+
+def hdf5_read(path):
+	with h5py.File(path, 'r') as file:
+		return hdf5_read_recursive(file)
+
 LOCK_HDF_CREATION = threading.Lock()
 
 class DatasetBase(PytorchDatasetInterface):

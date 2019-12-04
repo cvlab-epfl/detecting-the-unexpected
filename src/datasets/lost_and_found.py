@@ -55,12 +55,19 @@ class DatasetLostAndFound(DatasetBase):
 		Load a ROI which excludes the ego-vehicle and registration artifacts
 		"""
 		self.roi = imread(self.dir_root / 'LAF_roi.png') > 0
+		self.roi_frame = dict(
+			roi = self.roi
+		)
 
 	@staticmethod
 	def tr_get_anomaly_gt(labels_source, **_):
 		return dict(
 			anomaly_gt = labels_source >= 2,
+			roi_onroad = labels_source == 1,
 		)
+	
+	def tr_get_roi(self, **_):
+		return self.roi_frame
 
 	@staticmethod
 	def calc_dir_img(dset):

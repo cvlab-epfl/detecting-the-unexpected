@@ -13,9 +13,12 @@ from ..pipeline.evaluations import Evaluation, TrChannelLoad, TrChannelSave
 from ..pipeline.transforms import TrByField, TrBase, TrsChain, TrKeepFields, TrAsType, TrKeepFieldsByPrefix, tr_print, TrRenameKw, TrRemoveFields
 from ..pipeline.transforms_imgproc import TrZeroCenterImgs, TrShow
 from ..pipeline.transforms_pytorch import tr_torch_images, TrCUDA, TrNP, torch_onehot
-from ..datasets.dataset import imwrite, ImageBackgroundService, ChannelLoaderImage, ChannelLoaderHDF5, ChannelLoaderHDF5_NotShared
+from ..pipeline.bind import bind
+from ..datasets.dataset import imwrite, ImageBackgroundService, ChannelLoaderImage, ChannelLoaderHDF5, ChannelLoaderHDF5_NotShared, hdf5_read, hdf5_write
 from ..datasets.generic_sem_seg import TrSemSegLabelTranslation
 from ..datasets.cityscapes import CityscapesLabelInfo
+
+from .metrics import binary_confusion_matrix, cmats_to_rocinfo
 
 from ..a01_sem_seg.transforms import SemSegLabelsToColorImg, TrColorimg
 from ..a01_sem_seg.experiments import ExpSemSegPSP_Ensemble_BDD, ExpSemSegBayes_BDD, ExpSemSegPSP
@@ -24,7 +27,7 @@ from .experiments import Exp0516_Diff_SwapFgd_ImgVsGen_semGT, Exp0517_Diff_SwapF
 from ..a05_road_rec_baseline.experiments import Exp0525_RoadReconstructionRBM_LowLR
 
 from .E0_article_evaluation import get_anomaly_net
-from .E1_plot_utils import TrImgGrid, TrBlend, tr_draw_anomaly_contour
+from .E1_plot_utils import TrImgGrid, TrBlend, tr_draw_anomaly_contour, draw_rocinfos
 
 # class EvaluationSemSeg(Evaluation):
 # 	def __init__(self, exp):
@@ -110,6 +113,7 @@ from .E1_plot_utils import TrImgGrid, TrBlend, tr_draw_anomaly_contour
 # 		)
 
 
+from collections import namedtuple
 
 class EvaluationDetectingUnexpected:
 	SEM_SEG_UNCERTAINTY_NAMES = {
@@ -122,6 +126,16 @@ class EvaluationDetectingUnexpected:
 		'discrepancy_label_only': Exp0517_Diff_SwapFgd_ImgVsLabels_semGT,
 		'discrepancy_label_and_gen': Exp0521_SwapFgd_ImgAndLabelsVsGen_semGT,
 		'rbm': Exp0525_RoadReconstructionRBM_LowLR,
+	}
+
+	PlotStyle = namedtuple('PlotStyle', ['display_name', 'display_fmt'])
+	DEFAULT_PLOT_STYLES = {
+		'discrepancy_label_and_gen': PlotStyle('Ours', dict(color='b', linestyle='-')),
+		'discrepancy_gen_only': PlotStyle('Ours (Resynthesis only)', dict(color=(0.8, 0.3, 0.), linestyle='-.')),
+		'discrepancy_label_only': PlotStyle('Ours (Labels only)', dict(color='g', linestyle='--')),
+		'rbm': PlotStyle('RBM', dict(color='r', linestyle='--')),
+		'dropout': PlotStyle('Uncertainty (Bayesian)', dict(color='k', linestyle=':')),
+		'ensemble': PlotStyle('Uncertainty (Ensemble)', dict(color='k', linestyle=':')),
 	}
 
 	def __init__(self, sem_seg_variant):
@@ -146,6 +160,8 @@ class EvaluationDetectingUnexpected:
 
 		out_dir_default = Path('{channel.ctx.workdir}') / '{dset.name}_{dset.split}' / f'sem_{self.sem_seg_variant}'
 		out_dir = Path(out_dir_override or out_dir_default)
+
+		self.persistence_base_dir = out_dir
 
 		# outputs of the pipelines steps: 
 		self.storage = dict(
@@ -377,8 +393,107 @@ class EvaluationDetectingUnexpected:
 			]
 			Frame.frame_list_apply(tr_make_demo_imgs, dset.frames, n_proc=8, batch=4)
 
-		# def run_roc_curves(self, dset):
-			
+	def run_roc_curves_for_variant(self, dset, anomaly_variants=None, on_road=False):
+		
+		if anomaly_variants is None:
+			anomaly_variants = self.anomaly_detector_variants
+
+		roi_field = 'roi' if not on_road else 'roi_onroad'
+
+		# Pipeline
+		# (1) Load groundtruth
+		tr_roc = TrsChain(
+			TrChannelLoad('labels_source', 'labels_source'),
+			dset.tr_get_anomaly_gt,
+			dset.tr_get_roi,
+		)
+
+		# (2) calculate confusion matrices for each variant
+		# by doing all at once we only load the groundtruth once
+		for variant in anomaly_variants:
+			score_field = f'anomaly_{variant}'
+			cmat_field = f'cmats_{variant}'
+			tr_roc += [
+				TrChannelLoad(self.storage[score_field], score_field),
+				bind(binary_confusion_matrix, prob=score_field, gt_label='anomaly_gt', roi=roi_field).outs(cmat=cmat_field),
+			]
+
+		# (3) return only the confusion matrices (by clearing all the rest)
+		tr_roc += [
+			TrKeepFieldsByPrefix('cmats_'),
+		]
+		
+		# Execute pipeline
+		dset.discover()
+		dset.flush_hdf5_files()
+		dset.set_channels_enabled()
+		results = Frame.frame_list_apply(tr_roc, dset.frames, ret_frames=True, n_proc=8, batch=8)
+		
+		# Extract info from conf mats, such as fp / tp
+		rocinfo_by_variant = {}
+		for variant in anomaly_variants:
+			out_variant_name = variant if not on_road else f'{variant}_onroad'
+			cmat_field = f'cmats_{variant}'
+			cmat_sum = np.sum([fr[cmat_field] for fr in results], axis=0)
+
+			# rocinfo_by_variant[variant] = cmat_sum
+
+			rocinfo_by_variant[out_variant_name] = cmats_to_rocinfo(
+				name = out_variant_name,
+				cmats = cmat_sum,
+			)
+
+		# Store
+		self.roc_save_all(dset=dset, rocinfo_by_variant=rocinfo_by_variant)
+
+		return rocinfo_by_variant
+
+	def roc_path(self, variant_name, dset):
+		path_tmpl = str(self.persistence_base_dir / 'anomaly_roc' / f'{variant_name}_roc.hdf5')
+		path = Path(path_tmpl.format(dset=dset, channel = Frame(ctx=self)))		
+		return path
+
+	def roc_save(self, variant_name, dset, rocinfo):
+		p = self.roc_path(variant_name, dset)
+		log.info(f'Saving {p}')
+		p.parent.mkdir(parents=True, exist_ok=True)
+		hdf5_write(p, rocinfo)
+
+	def roc_save_all(self, dset, rocinfo_by_variant):
+		for variant_name, rocinfo in rocinfo_by_variant.items():
+			self.roc_save(variant_name=variant_name, dset=dset, rocinfo=rocinfo)
+
+	def roc_load(self, variant_name, dset):
+		return hdf5_read(self.roc_path(variant_name, dset))
+
+	def plot_path(self, dset):
+		path_tmpl = str(self.persistence_base_dir / 'ROC_{dset.name}_{dset.split}')
+		path = Path(path_tmpl.format(dset=dset, channel = Frame(ctx=self)))		
+		return path
+
+	def roc_plot_variants(self, dset, rocinfo_by_variant=None, variant_names=None, title=None):
+		if rocinfo_by_variant is None:
+			if variant_names is None:
+				variant_names = self.anomaly_detector_variants
+
+			rocinfo_by_variant = {
+				name: self.roc_load(variant_name=name, dset=dset)
+				for name in variant_names
+			}
+
+		# load default styles and names
+		infos = []
+		for info in rocinfo_by_variant.values():
+			default_style = self.DEFAULT_PLOT_STYLES.get(info['name'], {})
+			# load defaults but make it possible to overwrite them
+			info_with_style = default_style._asdict()
+			info_with_style.update(info)
+			infos.append(info_with_style)
+ 
+		fig = draw_rocinfos(infos, save=self.plot_path(dset))
+
+		
+
 
 
 class ExpPSP_EnsebleReuse(ExpSemSegPSP):

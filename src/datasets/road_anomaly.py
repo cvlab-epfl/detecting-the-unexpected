@@ -40,3 +40,6 @@ class DatasetRoadAnomaly(DatasetFrameList):
 			anomaly_gt = labels_source >= 2,
 		)
 	
+	@staticmethod
+	def tr_get_roi(**_):
+		return dict(roi=None)
