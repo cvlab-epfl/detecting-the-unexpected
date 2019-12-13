@@ -136,6 +136,20 @@ class Pix2PixHD_Generator:
 			gen_image = gen_image,
 		)
 
+	def tr_generator_np(self, pred_labels_trainIds, **_):
+		pred_labels_trainIds = torch.from_numpy(pred_labels_trainIds)
+		pred_labels_trainIds = pred_labels_trainIds[None] # add batch dim
+		
+		out = self.tr_generator(pred_labels_trainIds = pred_labels_trainIds.cuda())
+
+		gen_image = out['gen_image'][0].cpu()
+		gen_image = gen_image.numpy().transpose(1, 2, 0)
+
+		return dict(
+			gen_image = gen_image,
+		)
+
+
 	def construct_pipeline(self):
 		return Pipeline(
 			tr_input = TrsChain(

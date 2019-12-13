@@ -6,15 +6,17 @@ from ..pipeline import *
 from .networks import *
 from .transforms import *
 from ..paths import DIR_DATA
-from ..datasets.dataset import ChannelResultImage, ChannelLoaderHDF5, TrSaveChannelsAutoDset
+from ..datasets.dataset import ChannelLoaderImage, ChannelResultImage, ChannelLoaderHDF5, TrSaveChannelsAutoDset
 from ..datasets.cityscapes import DatasetCityscapesSmall
 from ..datasets.lost_and_found import DatasetLostAndFoundSmall
 DatasetLostAndFoundWithSemantics = DatasetLostAndFoundSmall
+from ..pipeline.bind import bind
+from ..pipeline.evaluations import TrChannelLoad, TrChannelSave
 from ..a01_sem_seg.networks import ClassifierSoftmax, LossCrossEntropy2d, PerspectiveSceneParsingNet
 from ..a01_sem_seg.experiments import ExpSemSegPSP
 from ..a01_sem_seg.transforms import TrColorimg
 
-from ..a04_reconstruction.experiments import TrPix2pixHD_Generator
+from ..a04_reconstruction.experiments import Pix2PixHD_Generator
 
 from matplotlib import pyplot as plt
 CMAP_MAGMA = plt.get_cmap('magma') 
@@ -433,13 +435,13 @@ class ExperimentDifferenceBin_fakeErr(ExperimentDifference02_fakeErr):
 
 
 ch_labels_fakePredErrBayes = ChannelResultImage('eval_BaySegNet/fakePredErr/labels', suffix='_trainIds', img_ext='.png')
-ch_errors_fakePredErrBayes = ChannelResultImage('eval_BaySegNet/fakePredErr/labels', suffix='_errors', img_ext='.png')
+ch_discrepancy_mask_fakePredErrBayes = ChannelResultImage('eval_BaySegNet/fakePredErr/labels', suffix='_errors', img_ext='.png')
 ch_reconstruction_fakePredErrBayes = ChannelResultImage('eval_BaySegNet/fakePredErr/gen_image', suffix='_gen')
 
 class ExperimentDifferenceBin_fakePredErrBDD(ExperimentDifferenceBin_fakeErr):
 	ch_labelsPred_fakePredErrBDD = ChannelResultImage('0508_fakePredErrBDD/labels', suffix='_predTrainIds', img_ext='.png')
 	ch_labelsFake_fakePredErrBDD = ChannelResultImage('0508_fakePredErrBDD/labels', suffix='_fakeTrainIds', img_ext='.png')
-	ch_errors_fakePredErrBDD = ChannelResultImage('0508_fakePredErrBDD/labels', suffix='_errors', img_ext='.png')
+	ch_discrepancy_mask_fakePredErrBDD = ChannelResultImage('0508_fakePredErrBDD/labels', suffix='_errors', img_ext='.png')
 	ch_reconstruction_fakePredErrBDD = ChannelResultImage('0508_fakePredErrBDD/gen_image', suffix='_gen')
 
 	cfg = add_experiment(ExperimentDifference02_fakeErr.cfg,
@@ -463,7 +465,7 @@ class ExperimentDifferenceBin_fakePredErrBDD(ExperimentDifferenceBin_fakeErr):
 		dset.add_channels(
 			pred_labels_trainIds = self.ch_labelsPred_fakePredErrBDD,
 			labels_fakeErr_trainIds = self.ch_labelsFake_fakePredErrBDD,
-			semseg_errors = self.ch_errors_fakePredErrBDD,
+			semseg_errors = self.ch_discrepancy_mask_fakePredErrBDD,
 			gen_image = self.ch_reconstruction_fakePredErrBDD,
 		)
 		dset.tr_post_load_pre_cache = TrsChain()
@@ -474,6 +476,7 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 	cfg = add_experiment(ExperimentDifferenceBin_fakePredErrBDD.cfg,
 		name='0510_DiffImgToLabel_',
 		gen_name = '051X_semGT__fakeDisp__genNoSty',
+		gen_img_ext = '.jpg',
 	    pix2pix_variant = '0405_nostyle_crop_ctc',
 		net=dict(
 			batch_eval=3,
@@ -491,23 +494,18 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 	fields_for_test = ['image', 'gen_image']
 	fields_for_training = ['image', 'gen_image', 'semseg_errors_label']
 
+
 	def init_transforms(self):
 		super().init_transforms()
 
-		gen_name = self.cfg['gen_name']
+		self.init_discrepancy_dataset_channels()
 
-		self.ch_labelsPred = ChannelResultImage(f'{gen_name}/labels', suffix='_predTrainIds', img_ext='.png')
-		self.ch_labelsFake = ChannelResultImage(f'{gen_name}/labels', suffix='_fakeTrainIds', img_ext='.png')
-		self.ch_errors = ChannelResultImage(f'{gen_name}/labels', suffix='_errors', img_ext='.png')
-		self.ch_reconstruction = ChannelResultImage(f'{gen_name}/gen_image', suffix='_gen')
+		# the function which alters labels to create synthetic discrepancies
+		self.synthetic_mod = partial(tr_synthetic_disappear_objects, disap_fraction = self.cfg['disap_fraction'])
 
 		self.roi_outside = np.logical_not(CTC_ROI)
 
-
 		self.tr_preprocess = TrsChain()
-
-		self.synthetic_mod = partial(tr_synthetic_disappear_objects, disap_fraction = self.cfg['disap_fraction'])
-
 		self.tr_input_train = self.tr_semseg_errors_to_label
 		self.tr_input_test = TrsChain()
 
@@ -526,6 +524,28 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 			TrKeepFields(*self.fields_for_training),
 		]
 
+	def init_discrepancy_dataset_channels(self):
+		gen_name = self.cfg['gen_name']
+		dir_disrepancy_dset = DIR_DATA / 'discrepancy_dataset' / '{dset.name}' / gen_name
+		
+		# Channels of the synthetic discrepancy dataset 
+
+		# the labels with changed instances
+		self.ch_labelsFake = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_fakeTrainIds.png')
+		self.ch_discrepancy_mask = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_errors.png')
+		self.ch_reconstruction = ChannelLoaderImage(dir_disrepancy_dset / 'gen_image' / '{dset.split}' / '{fid}_gen{channel.img_ext}', img_ext=self.cfg['gen_img_ext'])
+		
+		# the "correct" labels for the frame
+		# usually this are the trainIDs of the Cityscapes groundtruth, but alternatively those could be predictions of a sem-seg network
+		self.ch_labelsPred = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_predTrainIds.png')
+
+
+		# dir_disrepancy_dset = self.workdir / 'discrepancy_dset'
+		# self.storage = dict(
+		# 	disc_dset_labels_fake = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_fakeTrainIds.png'),
+		# 	disc_dset_discrepancy_mask = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_errors.png'),
+		# 	disc_dset_gen_image = ChannelLoaderImage(dir_disrepancy_dset / 'gen_image' / '{dset.split}' / '{fid}_gen{channel.img_ext}', img_ext='.jpg'),
+		# )
 
 	def tr_semseg_errors_to_label(self, semseg_errors, **_):
 		errs = semseg_errors.astype(np.int64)
@@ -537,9 +557,9 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 	def setup_dset(self, dset):
 		super().setup_dset(dset)
 		dset.add_channels(
-			pred_labels_trainIds=self.ch_labelsPred,
+			# pred_labels_trainIds=self.ch_labelsPred,
 			labels_fakeErr_trainIds=self.ch_labelsFake,
-			semseg_errors=self.ch_errors,
+			semseg_errors=self.ch_discrepancy_mask,
 			gen_image=self.ch_reconstruction,
 		)
 		dset.tr_post_load_pre_cache = TrsChain()
@@ -576,35 +596,75 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 			dset.set_channels_enabled('labels_source')
 			Frame.frame_list_apply(tr_copy_gt_labels, dset, ret_frames=False)
 
-	def prepare_synthetic_changes(self, dsets, b_show=False):
+	def discrepancy_dataset_init_pipeline(self, use_gt_labels=True):
+		"""
+		@param use_gt_labels: True: the starting labels which we will be altering are the GT semantics of Cityscapes
+			False: Load starting labels from ch_labelsPred
+		"""
+		self.pix2pix = Pix2PixHD_Generator(self.cfg['pix2pix_variant'])
 
-		# initialize self.pix2pix earlier
+		if use_gt_labels:
+			self.tr_load_correct_labels = TrsChain(
+				# load cityscapes labels and instances
+				TrChannelLoad('labels_source', 'labels_source'),
+				TrChannelLoad('instances', 'instances'),
+				# convert to trainIDs
+				TrSemSegLabelTranslation(fields=dict(labels_source='pred_labels_trainIds'),	table=CityscapesLabelInfo.table_label_to_trainId),
+			)
+		else:
+			self.tr_load_correct_labels = TrChannelLoad(self.ch_labelsPred, 'pred_labels_trainIds'),
 
-		tr_disap_and_gen = TrsChain(
+		self.tr_alter_labels_and_gen_image = TrsChain(
+			# load original labels
+			self.tr_load_correct_labels,
+			# alter labels
 			self.synthetic_mod,
-			TrSemSegLabelTranslation(
-				fields=dict(labels_fakeErr_trainIds='labels_source'),
-			    table=CityscapesLabelInfo.table_trainId_to_label
-			),
-			TrPix2pixHD_Generator(self.cfg['pix2pix_variant'], b_postprocess=True),
+			# synthetize image
+			bind(self.pix2pix.tr_generator_np, pred_labels_trainIds='labels_fakeErr_trainIds').outs(gen_image='gen_image'),
 		)
 
-		tr_gen_and_show = TrsChain(
-			tr_disap_and_gen,
+		self.tr_synthetic_and_show = TrsChain(
+			self.tr_alter_labels_and_gen_image,
 			TrColorimg('pred_labels_trainIds'),
 			TrColorimg('labels_fakeErr_trainIds'),
-			TrShow(['image', 'gen_image'],
-			       ['pred_labels_trainIds_colorimg', 'labels_fakeErr_trainIds_colorimg', 'semseg_errors']),
+			TrChannelLoad('image', 'image'),
+			TrShow(
+				['image', 'gen_image'],
+				['pred_labels_trainIds_colorimg', 'labels_fakeErr_trainIds_colorimg', 'semseg_errors'],
+			),
 		)
 
-		tr_gen_and_save = TrsChain(
-			tr_disap_and_gen,
+		self.tr_synthetic_and_save = TrsChain(
+			self.tr_alter_labels_and_gen_image,
+			# saving as image does not like np.bool
 			TrByField('semseg_errors', lambda x: x.astype(np.uint8)),
-			TrSaveChannelsAutoDset(['gen_image', 'semseg_errors', 'labels_fakeErr_trainIds']),
+			# write to disk
+			TrChannelSave(self.ch_discrepancy_mask, 'semseg_errors'),
+			TrChannelSave(self.ch_labelsFake, 'labels_fakeErr_trainIds'),
+			TrChannelSave(self.ch_reconstruction, 'gen_image'),
 		)
+
+	def discrepancy_dataset_generate(self, dsets=None, b_show=False):
+		self.discrepancy_dataset_init_pipeline()
+
+		dsets = dsets or self.datasets.values()
 
 		for dset in dsets:
+			# disable default loading
+			dset.set_channels_enabled()
+			# clear cache
+			dset.discover()
 
+			if b_show:
+				dset[0].apply(self.tr_synthetic_and_show)
+			else:
+				Frame.frame_list_apply(self.tr_synthetic_and_save, dset, n_proc=1, n_threads=1, ret_frames=False)
+
+
+	def prepare_synthetic_changes(self, dsets, b_show=False):
+		self.discrepancy_dataset_init_pipeline()
+
+		for dset in dsets:
 			dset.set_channels_enabled('image', 'pred_labels_trainIds', 'instances')
 			dset.discover()
 
