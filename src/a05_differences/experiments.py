@@ -126,16 +126,16 @@ class ExperimentDifference01(ExperimentBase):
 
 			fr.apply(self.tr_preprocess)
 
-			imageio.imwrite(self.log_dir / f'gt_image_{fid_no_slash}.jpg', fr.image)
-			imageio.imwrite(self.log_dir / f'gt_labels_{fid_no_slash}.png', 255 * fr.semseg_errors)
+			imageio.imwrite(self.train_out_dir / f'gt_image_{fid_no_slash}.jpg', fr.image)
+			imageio.imwrite(self.train_out_dir / f'gt_labels_{fid_no_slash}.png', 255 * fr.semseg_errors)
 
-			self.log_img.add_image(
+			self.tboard_img.add_image(
 				'{0}_img'.format(fid),
 				fr.image.transpose((2, 0, 1)),
 				0,
 			)
 
-			self.log_gt.add_image(
+			self.tboard_gt.add_image(
 				'{0}_gt'.format(fid),
 				fr.semseg_errors[None, :, :],
 				0,
@@ -153,9 +153,9 @@ class ExperimentDifference01(ExperimentBase):
 
 			# drop the alpha channel
 			pred_colorimg = CMAP_MAGMA(frame.anomaly_p, bytes=True)[:, :, :3]  
-			imageio.imwrite(self.log_dir / f'e{epoch:03d}_anomalyP_{fid_no_slash}.jpg', pred_colorimg)
+			imageio.imwrite(self.train_out_dir / f'e{epoch:03d}_anomalyP_{fid_no_slash}.jpg', pred_colorimg)
 
-			self.log.add_image(
+			self.tboard.add_image(
 				'{0}_class'.format(fid),
 				frame.anomaly_p[None, :, :],
 				self.state['epoch_idx'],
@@ -999,7 +999,33 @@ class Exp0521_SwapFgd_ImgAndLabelsVsGen_semGT(Exp0520_Diff_ImgAndLabelsVsGen_sem
 		super().init_transforms()
 		self.synthetic_mod = partial(tr_synthetic_swapFgd_labels, swap_fraction = self.cfg['swap_fraction'])
 
+
+class Exp0552_NewDiscrepancyTraining(Exp0521_SwapFgd_ImgAndLabelsVsGen_semGT):
+	"""
+	An example new experiment variant using the provided discrepancy training set.
 	
+	Training code:
+	from src.a05_differences.experiments import Exp0552_NewDiscrepancyTraining
+	Exp0552_NewDiscrepancyTraining.training_procedure()
+
+	Weights will be written to $DIR_EXP/0552_NewDiscrepancyTraining
+	Checkpoints are saved every epoch:
+		chk_best.pth - checkpoint with the lowest loss on eval set
+		chk_last.pth - checkpoint after the most recent epoch
+		optimizer.pth - optimizer data (momentum etc) after the most recent epoch
+	
+	The directory will also contain:
+	*	`[date]_log` - predictions for sample evaluation frames indexed by epoch
+	*	`training.log` - logs from the logging module, if the training procedure failed, the exception will be written there
+
+	The loss is written to tensorboard:
+		tensorboard --logdir $DIR_EXP/0552_NewDiscrepancyTraining
+	"""
+	cfg = add_experiment(Exp0521_SwapFgd_ImgAndLabelsVsGen_semGT.cfg,
+		name = '0552_NewDiscrepancyTraining',
+		gen_name = '051X_semGT__fakeSwapFgd__genNoSty',
+    )
+
 	
 # Experiments used in article
 # 'gen_swap_gt': Exp0516_Diff_SwapFgd_ImgVsGen_semGT,

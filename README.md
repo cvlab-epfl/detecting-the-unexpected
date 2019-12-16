@@ -47,6 +47,8 @@ and place them in `detecting-the-unexpected/exp` (or another location specified 
 * `data`
   * `joint_pipeline_example` - a few images from *Lost and Found*, to demonstrate the joint pipeline
   * `out` - default output location of the joint pipeline
+  * `discrepancy_dataset/cityscapes` - synthetic discrepancy datasets
+	* `051X_semGT__fakeSwapFgd__genNoSty` - place our discrepancy dataset here. [[0521_synthetic_discrepancy_data.7z (205MB)]](https://drive.switch.ch/index.php/s/YBrrxbOofSzUnW9).
 
 ## Running the pipeline
 
@@ -92,6 +94,51 @@ On Windows the ImageMagick binary is called `magick` instead of `convert`, so th
 * Set `$DIR_CITYSCAPES` to point to the directory of the original dataset
 * Set `$DIR_CITYSCAPES_SMALL` to the place the compressed dataset should be written to
 * run [`compress_Cityscapes_1024x512_webp.sh`](src/datasets/conversion_tools/compress_Cityscapes_1024x512_webp.sh)
+
+
+## Discrepancy Network
+
+### Synthetic discrepancy dataset
+
+The synthetic discrepancy dataset used in our experiments can be downloaded here: 
+[[0521_synthetic_discrepancy_data.7z (205MB)]](https://drive.switch.ch/index.php/s/YBrrxbOofSzUnW9).
+Please place it at `data/discrepancy_dataset/cityscapes/051X_semGT__fakeSwapFgd__genNoSty`.
+
+To generate your own version of the synthetic discrepancy dataset, please follow the instructions in [Discrepancy_GenerateDataset.ipynb](Discrepancy_GenerateDataset.ipynb).
+
+### Training
+
+The Experiment class (`src/pipeline/experiment.py`) is used to train the networks
+(extract from [`src/a05_differences/experiments.py`](src/a05_differences/experiments.py)):
+
+```python
+# First we add a new class for our experiment
+class Exp0552_NewDiscrepancyTraining(Exp0521_SwapFgd_ImgAndLabelsVsGen_semGT):
+	cfg = add_experiment(Exp0521_SwapFgd_ImgAndLabelsVsGen_semGT.cfg,
+		name = '0552_NewDiscrepancyTraining',
+		gen_name = '051X_semGT__fakeSwapFgd__genNoSty',
+	)
+
+# Execute the training process
+# from src.a05_differences.experiments import MyExperimentVariant
+Exp0552_NewDiscrepancyTraining.training_procedure()
+```
+
+Weights will be written to `$DIR_EXP/0552_NewDiscrepancyTraining`
+Checkpoints are saved every epoch:
+* `chk_best.pth` - checkpoint with the lowest loss on eval set
+* `chk_last.pth` - checkpoint after the most recent epoch
+* `optimizer.pth` - optimizer data (momentum etc) after the most recent epoch
+	
+The directory will also contain:
+* `[date]_log` - predictions for sample evaluation frames indexed by epoch
+* `training.log` - logs from the logging module, if the training procedure failed, the exception will be written there
+
+The loss is written to tensorboard can can be displayed in the following way:
+
+```bash
+	tensorboard --logdir $DIR_EXP/0552_NewDiscrepancyTraining
+```
 
 
 ## Contact

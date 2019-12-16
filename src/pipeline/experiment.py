@@ -174,8 +174,6 @@ class ExperimentBase():
 		self.train_out_dir = self.workdir / f"imgs_{self.state['run_name']}"
 		self.train_out_dir.mkdir(exist_ok=True, parents=True)
 
-		self.txt_log = os
-
 		# names of the frames to display
 		def short_frame_name(fn):
 			# remove directory path
@@ -388,6 +386,9 @@ class ExperimentBase():
 			exp.init_default_datasets()
 
 			exp.init_net("train")
+
+			log.info(f'Name of the run: {exp.state["run_name"]}')
+
 			exp.init_transforms()
 			exp.init_loss()
 			exp.init_log()
