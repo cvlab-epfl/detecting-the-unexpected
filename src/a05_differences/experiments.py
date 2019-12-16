@@ -532,12 +532,14 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 
 		# the labels with changed instances
 		self.ch_labelsFake = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_fakeTrainIds.png')
+		self.ch_labelsFake_colorimg = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_fakeTrainIds_colorimg.png')
 		self.ch_discrepancy_mask = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_errors.png')
 		self.ch_reconstruction = ChannelLoaderImage(dir_disrepancy_dset / 'gen_image' / '{dset.split}' / '{fid}_gen{channel.img_ext}', img_ext=self.cfg['gen_img_ext'])
 		
 		# the "correct" labels for the frame
 		# usually this are the trainIDs of the Cityscapes groundtruth, but alternatively those could be predictions of a sem-seg network
 		self.ch_labelsPred = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_predTrainIds.png')
+		self.ch_labelsPred_colorimg = ChannelLoaderImage(dir_disrepancy_dset / 'labels' / '{dset.split}' / '{fid}_predTrainIds_colorimg.png')
 
 
 		# dir_disrepancy_dset = self.workdir / 'discrepancy_dset'
@@ -548,7 +550,7 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 		# )
 
 	def tr_semseg_errors_to_label(self, semseg_errors, **_):
-		errs = semseg_errors.astype(np.int64)
+		errs = (semseg_errors > 0).astype(np.int64)
 		errs[self.roi_outside] = 255
 		return dict(
 			semseg_errors_label=errs,
@@ -596,7 +598,7 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 			dset.set_channels_enabled('labels_source')
 			Frame.frame_list_apply(tr_copy_gt_labels, dset, ret_frames=False)
 
-	def discrepancy_dataset_init_pipeline(self, use_gt_labels=True):
+	def discrepancy_dataset_init_pipeline(self, use_gt_labels=True, write_orig_label=False):
 		"""
 		@param use_gt_labels: True: the starting labels which we will be altering are the GT semantics of Cityscapes
 			False: Load starting labels from ch_labelsPred
@@ -637,15 +639,27 @@ class ExperimentDifference_Auto_Base(ExperimentDifferenceBin_fakeErr):
 		self.tr_synthetic_and_save = TrsChain(
 			self.tr_alter_labels_and_gen_image,
 			# saving as image does not like np.bool
-			TrByField('semseg_errors', lambda x: x.astype(np.uint8)),
+			TrByField('semseg_errors', lambda x: (x > 0).astype(np.uint8)*255),
 			# write to disk
 			TrChannelSave(self.ch_discrepancy_mask, 'semseg_errors'),
 			TrChannelSave(self.ch_labelsFake, 'labels_fakeErr_trainIds'),
 			TrChannelSave(self.ch_reconstruction, 'gen_image'),
+
+			# fake labels colorimg
+			TrColorimg('labels_fakeErr_trainIds'),
+			TrChannelSave(self.ch_labelsFake_colorimg, 'labels_fakeErr_trainIds_colorimg'),
 		)
 
-	def discrepancy_dataset_generate(self, dsets=None, b_show=False):
-		self.discrepancy_dataset_init_pipeline()
+		# write the original labesl (as they were before alteration)
+		if write_orig_label:
+			self.tr_synthetic_and_save += [
+				TrColorimg('pred_labels_trainIds'),
+				TrChannelSave(self.ch_labelsPred, 'pred_labels_trainIds'),
+				TrChannelSave(self.ch_labelsPred_colorimg, 'pred_labels_trainIds_colorimg'),
+			]
+
+	def discrepancy_dataset_generate(self, dsets=None, b_show=False, write_orig_label=False):
+		self.discrepancy_dataset_init_pipeline(write_orig_label=write_orig_label)
 
 		dsets = dsets or self.datasets.values()
 
