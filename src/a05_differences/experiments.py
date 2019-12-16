@@ -1,12 +1,11 @@
 import numpy as np
 import torch
-import imageio
 from pathlib import Path
 from ..pipeline import *
 from .networks import *
 from .transforms import *
 from ..paths import DIR_DATA
-from ..datasets.dataset import ChannelLoaderImage, ChannelResultImage, ChannelLoaderHDF5, TrSaveChannelsAutoDset
+from ..datasets.dataset import imwrite, ChannelLoaderImage, ChannelResultImage, ChannelLoaderHDF5, TrSaveChannelsAutoDset
 from ..datasets.cityscapes import DatasetCityscapesSmall
 from ..datasets.lost_and_found import DatasetLostAndFoundSmall
 DatasetLostAndFoundWithSemantics = DatasetLostAndFoundSmall
@@ -126,9 +125,9 @@ class ExperimentDifference01(ExperimentBase):
 
 			fr.apply(self.tr_preprocess)
 
-			imageio.imwrite(self.train_out_dir / f'gt_image_{fid_no_slash}.jpg', fr.image)
-			imageio.imwrite(self.train_out_dir / f'gt_labels_{fid_no_slash}.png', 255 * fr.semseg_errors)
-
+			imwrite(self.train_out_dir / f'gt_image_{fid_no_slash}.webp', fr.image)
+			imwrite(self.train_out_dir / f'gt_labels_{fid_no_slash}.png', (fr.semseg_errors > 0).astype(np.uint8) * 255)
+			
 			self.tboard_img.add_image(
 				'{0}_img'.format(fid),
 				fr.image.transpose((2, 0, 1)),
@@ -153,7 +152,7 @@ class ExperimentDifference01(ExperimentBase):
 
 			# drop the alpha channel
 			pred_colorimg = CMAP_MAGMA(frame.anomaly_p, bytes=True)[:, :, :3]  
-			imageio.imwrite(self.train_out_dir / f'e{epoch:03d}_anomalyP_{fid_no_slash}.jpg', pred_colorimg)
+			imwrite(self.train_out_dir / f'e{epoch:03d}_anomalyP_{fid_no_slash}.webp', pred_colorimg)
 
 			self.tboard.add_image(
 				'{0}_class'.format(fid),
