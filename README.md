@@ -48,7 +48,7 @@ and place them in `detecting-the-unexpected/exp` (or another location specified 
   * `joint_pipeline_example` - a few images from *Lost and Found*, to demonstrate the joint pipeline
   * `out` - default output location of the joint pipeline
   * `discrepancy_dataset/cityscapes` - synthetic discrepancy datasets
-	* `051X_semGT__fakeSwapFgd__genNoSty` - place our discrepancy dataset here. [[0521_synthetic_discrepancy_data.7z (205MB)]](https://drive.switch.ch/index.php/s/YBrrxbOofSzUnW9).
+	* `051X_semGT__fakeSwapFgd__genNoSty` - place our discrepancy dataset here. [[052X_synthetic_discrepancy__fakeSwapFgd.7z (208MB)]](https://drive.switch.ch/index.php/s/dzCcB0BWXMHG3e0/download).
 
 ## Running the pipeline
 
@@ -101,7 +101,7 @@ On Windows the ImageMagick binary is called `magick` instead of `convert`, so th
 ### Synthetic discrepancy dataset
 
 The synthetic discrepancy dataset used in our experiments can be downloaded here: 
-[[0521_synthetic_discrepancy_data.7z (205MB)]](https://drive.switch.ch/index.php/s/YBrrxbOofSzUnW9).
+[[052X_synthetic_discrepancy__fakeSwapFgd.7z (208MB)]](https://drive.switch.ch/index.php/s/dzCcB0BWXMHG3e0/download).
 Please place it at `data/discrepancy_dataset/cityscapes/051X_semGT__fakeSwapFgd__genNoSty`.
 
 To generate your own version of the synthetic discrepancy dataset, please follow the instructions in [Discrepancy_GenerateDataset.ipynb](Discrepancy_GenerateDataset.ipynb).
@@ -140,6 +140,12 @@ The loss is written to tensorboard can can be displayed in the following way:
 	tensorboard --logdir $DIR_EXP/0552_NewDiscrepancyTraining
 ```
 
+Training scripts for variants of the discrepancy network:
+
+* `0521_train_discrepancy__full.py`
+* `0516_train_discrepancy__gen_only.py`
+* `0517_train_discrepancy__labels_only.py`
+* `0552_train_discrepancy__example_new_variant.py`
 
 ## Contact
 I am working to provide more examples and automated scripts.
