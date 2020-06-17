@@ -140,12 +140,15 @@ def cmats_to_rocinfo(name, cmats):
 	tp_rates = tp / (tp+fn)
 	fp_rates = fp / (fp+tn)
 
+	area_under = np.trapz(tp_rates, fp_rates)
+
 	return dict(
 		name = name,
 		num_levels=num_levels,
 		tp_rates=tp_rates,
 		fp_rates=fp_rates,
 		cmats=cmats,
+		auroc = area_under,
 #		roi=roi,
 	)
 
