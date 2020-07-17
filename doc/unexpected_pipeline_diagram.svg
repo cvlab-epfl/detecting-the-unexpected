@@ -1,380 +1,423 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:cc="http://creativecommons.org/ns#"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:svg="http://www.w3.org/2000/svg"
-	xmlns="http://www.w3.org/2000/svg"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	id="svg1632"
-	version="1.1"
-	viewBox="0 0 275.79868 155.90237"
-	height="155.90237mm"
-	width="275.79868mm">
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4f, 2020-05-01)"
+   sodipodi:docname="unexpected_pipeline_diagram.svg"
+   width="277.66968mm"
+   height="157.20453mm"
+   viewBox="0 0 277.66968 157.20452"
+   version="1.1"
+   id="svg1632">
+  <metadata
+     id="metadata74">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:current-layer="layer1-2"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:cy="298.13274"
+     inkscape:cx="521.19435"
+     inkscape:zoom="1.0657845"
+     fit-margin-bottom="0"
+     fit-margin-right="0"
+     fit-margin-left="0"
+     fit-margin-top="0"
+     showgrid="false"
+     id="namedview72"
+     inkscape:window-height="1129"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
   <defs
-	  id="defs1626">
-	 <marker
-		 orient="auto"
-		 refY="0"
-		 refX="0"
-		 id="marker12632"
-		 style="overflow:visible">
-		<path
-			id="path12630"
-			d="M 0,0 5,-5 -12.5,0 5,5 Z"
-			style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
-			transform="matrix(-0.2,0,0,-0.2,-1.2,0)" />
-	 </marker>
-	 <marker
-		 orient="auto"
-		 refY="0"
-		 refX="0"
-		 id="marker13210"
-		 style="overflow:visible">
-		<path
-			id="path13208"
-			d="M 0,0 5,-5 -12.5,0 5,5 Z"
-			style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
-			transform="matrix(-0.2,0,0,-0.2,-1.2,0)" />
-	 </marker>
-	 <marker
-		 orient="auto"
-		 refY="0"
-		 refX="0"
-		 id="marker12918"
-		 style="overflow:visible">
-		<path
-			id="path12916"
-			d="M 0,0 5,-5 -12.5,0 5,5 Z"
-			style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
-			transform="matrix(-0.2,0,0,-0.2,-1.2,0)" />
-	 </marker>
-	 <marker
-		 style="overflow:visible"
-		 id="Arrow1Sstart"
-		 refX="0"
-		 refY="0"
-		 orient="auto">
-		<path
-			transform="matrix(0.2,0,0,0.2,1.2,0)"
-			style="fill:#d45500;fill-opacity:1;fill-rule:evenodd;stroke:#d45500;stroke-width:1.00000003pt;stroke-opacity:1"
-			d="M 0,0 5,-5 -12.5,0 5,5 Z"
-			id="path8318" />
-	 </marker>
-	 <marker
-		 style="overflow:visible"
-		 id="Arrow1Send"
-		 refX="0"
-		 refY="0"
-		 orient="auto">
-		<path
-			transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
-			style="fill:#d45500;fill-opacity:1;fill-rule:evenodd;stroke:#d45500;stroke-width:1.00000003pt;stroke-opacity:1"
-			d="M 0,0 5,-5 -12.5,0 5,5 Z"
-			id="path8321" />
-	 </marker>
+     id="defs1626">
+    <marker
+       style="overflow:visible"
+       id="marker12632"
+       refX="0"
+       refY="0"
+       orient="auto">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path12630" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker13210"
+       refX="0"
+       refY="0"
+       orient="auto">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path13208" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker12918"
+       refX="0"
+       refY="0"
+       orient="auto">
+      <path
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path12916" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Sstart"
+       style="overflow:visible">
+      <path
+         id="path8318"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#d45500;fill-opacity:1;fill-rule:evenodd;stroke:#d45500;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.2,0,0,0.2,1.2,0)" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send"
+       style="overflow:visible">
+      <path
+         id="path8321"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#d45500;fill-opacity:1;fill-rule:evenodd;stroke:#d45500;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)" />
+    </marker>
   </defs>
   <g
-	  transform="translate(-6.1991371,-92.400083)"
-	  id="layer1">
-	 <g
-		 transform="matrix(0.73377778,0,0,0.73377778,311.38806,133.7333)"
-		 id="layer1-2"
-		 style="stroke-width:0.40255323">
-		<image
-			y="-46.393925"
-			x="-415.91464"
-			id="image2283"
-			preserveAspectRatio="none"
-			height="80"
-			width="160"
-			xlink:href="pipeline_image.jpg"
-			style="stroke-width:0.12579788" />
-		<path
-			id="path3960"
-			d="m -256.2074,8.60607 5.53788,0.182675 c 7.75487,0.255806 8.75487,1.817328 8.57072,11.485967 l 3e-5,106.021838 c 0,10.5132 8.04638,9.30518 24.82532,9.30752 l 14.3588,0.002"
-			style="fill:none;stroke:#000000;stroke-width:1.36281037;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker12632)" />
-		<image
-			style="stroke-width:0.10063832"
-			xlink:href="pipeline_anomaly_p.jpg"
-			y="73.606071"
-			x="-200.91464"
-			id="image2305"
-			preserveAspectRatio="none"
-			height="80"
-			width="160" />
-		<path
-			id="path3960-7"
-			d="m -352.2475,121.54003 -0.014,7.58285 c -0.0139,7.5389 5.41974,9.12522 16.75427,9.15744 l 114.59258,0.32575 1.40741,-1.32575"
-			style="fill:none;stroke:#000000;stroke-width:1.36281037;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker13210)" />
-		<path
-			id="path3960-75"
-			d="M -199.91465,33.606072 H -220.003 c -16.74029,0 -16.74029,0 -16.74029,11.160193 l 0.22462,75.950185 c -0.39598,10.88962 0.60402,11.88962 19.60402,11.88962"
-			style="fill:none;stroke:#000000;stroke-width:1.36281037;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker12918)" />
-		<g
-			style="stroke-width:0.40255323"
-			transform="translate(-24.398059,-2.3128752)"
-			id="g199760">
-		  <text
-			  id="text1204"
-			  y="153.91895"
-			  x="-285.51657"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Manjari;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.40255323"
-			  xml:space="preserve"><tspan
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Manjari;fill:#aa4400;fill-opacity:1;stroke-width:0.40255323"
-				 id="tspan1202"
-				 y="153.91895"
-				 x="-285.51657">Discrepancy Network</tspan></text>
-		  <g
-			  style="stroke-width:0.40255323"
-			  transform="translate(-682.04405,-876.84485)"
-			  id="g3804-1-2">
-			 <circle
-				 r="7"
-				 cy="1027.7638"
-				 cx="388.52747"
-				 id="use3724-3-2-9"
-				 style="fill:none;fill-opacity:1;stroke:#aa4400;stroke-width:1.05996394;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-			 <text
-				 id="text3799-7-3"
-				 y="1031.7638"
-				 x="388.52747"
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.3605769"
-				 xml:space="preserve"><tspan
-					style="font-size:12px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:0.3605769"
-					y="1031.7638"
-					x="388.52747"
-					id="tspan3797-0-19">3</tspan></text>
-		  </g>
-		</g>
-		<image
-			style="stroke-width:0.12579788"
-			xlink:href="pipeline_reconstruction.jpg"
-			y="48.606071"
-			x="-415.91464"
-			id="image2294"
-			preserveAspectRatio="none"
-			height="80"
-			width="160" />
-		<g
-			style="stroke-width:0.40255323"
-			id="g195974"
-			transform="translate(-420.9382,-743.42832)">
-		  <text
-			  id="text1192"
-			  y="4.419383"
-			  x="100.24052"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Manjari;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.40255323"
-			  xml:space="preserve"
-			  transform="matrix(3.3854165,0,0,3.3854165,24.374987,682.07294)"><tspan
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.36307693px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.40255323"
-				 y="4.419383"
-				 x="85.853119"
-				 id="tspan9424"><tspan
-	style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.36307693px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.40255323"
-	id="tspan1188"
-	y="4.419383"
-	x="85.853119"> semantic segmentation - </tspan>PSP Net<tspan
-	style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.77230775px;font-family:Manjari;baseline-shift:super;fill:#aa4400;stroke-width:0.40255323"
-	id="tspan9428">[2]</tspan></tspan><tspan
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.36307693px;font-family:Manjari;text-align:center;baseline-shift:super;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.40255323"
-				 y="7.9471607"
-				 x="85.853119"
-				 id="tspan9426" /></text>
-		  <g
-			  style="stroke-width:0.40255323"
-			  transform="matrix(3.7795276,0,0,3.7795276,-1458.0079,-3868.448)"
-			  id="g3804-2" />
-		  <g
-			  style="stroke-width:0.40255323"
-			  transform="translate(-146.0286,-333.13483)"
-			  id="g3804-1-9">
-			 <circle
-				 r="7"
-				 cy="1027.7638"
-				 cx="388.52747"
-				 id="use3724-3-2-2"
-				 style="fill:none;fill-opacity:1;stroke:#aa4400;stroke-width:1.05996394;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-			 <text
-				 id="text3799-7-2"
-				 y="1031.7037"
-				 x="388.58444"
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.3605769"
-				 xml:space="preserve"><tspan
-					style="font-size:12px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:0.3605769"
-					y="1031.7037"
-					x="388.58444"
-					id="tspan3797-0-8">1</tspan></text>
-		  </g>
-		</g>
-		<image
-			style="stroke-width:0.10063832"
-			xlink:href="pipeline_labels.png"
-			y="-31.393929"
-			x="-200.91464"
-			id="image2272"
-			preserveAspectRatio="none"
-			height="80"
-			width="160" />
-		<path
-			id="path2310-7"
-			d="m -185.91465,-33.509207 c 0,-7.884719 0,-7.884719 -10,-7.884719 h -59.99999"
-			style="fill:none;stroke:#d45500;stroke-width:1.36281037;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow1Sstart)" />
-		<path
-			id="path2310-7-2"
-			d="m -185.91465,48.606071 c 0,10.39806 -7.3e-4,10.573423 -20.79612,10.39806 l -47.20387,-0.39806"
-			style="fill:none;stroke:#d45500;stroke-width:1.36281037;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Send)" />
-		<g
-			style="stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none"
-			transform="translate(-279.65311,5.615318)"
-			id="g5578">
-		  <rect
-			  style="fill:#ffffff;fill-opacity:1;stroke:#d45500;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			  id="rect2937"
-			  width="14.430788"
-			  height="14.430767"
-			  x="49.307678"
-			  y="45.559986"
-			  ry="1.924116" />
-		  <text
-			  xml:space="preserve"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.45887184px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none"
-			  x="56.738464"
-			  y="55.990753"
-			  id="text5570"><tspan
-				 id="tspan5568"
-				 x="56.738464"
-				 y="55.990753"
-				 style="font-size:10px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none">2</tspan></text>
-		</g>
-		<g
-			style="stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none"
-			transform="translate(-279.65311,-94.384679)"
-			id="g5578-6">
-		  <rect
-			  style="fill:#ffffff;fill-opacity:1;stroke:#d45500;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			  id="rect2937-4"
-			  width="14.430788"
-			  height="14.430767"
-			  x="49.307678"
-			  y="45.559986"
-			  ry="1.924116" />
-		  <text
-			  xml:space="preserve"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.45887184px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none"
-			  x="56.738464"
-			  y="55.990753"
-			  id="text5570-5"><tspan
-				 id="tspan5568-5"
-				 x="56.738464"
-				 y="55.990753"
-				 style="font-size:10px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none">1</tspan></text>
-		</g>
-		<g
-			style="stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none"
-			transform="translate(-279.65311,83.046083)"
-			id="g5578-5">
-		  <rect
-			  style="fill:#ffffff;fill-opacity:1;stroke:#d45500;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			  id="rect2937-6"
-			  width="14.430788"
-			  height="14.430767"
-			  x="49.307678"
-			  y="45.559986"
-			  ry="1.924116" />
-		  <text
-			  xml:space="preserve"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.45887184px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none"
-			  x="56.604828"
-			  y="56.159081"
-			  id="text5570-0"><tspan
-				 id="tspan5568-6"
-				 x="56.604828"
-				 y="56.159081"
-				 style="font-size:10px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:1.36281037;stroke-miterlimit:4;stroke-dasharray:none">3</tspan></text>
-		</g>
-		<text
-			xml:space="preserve"
-			style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;line-height:1.25;font-family:Manjari;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.13628104;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			x="-399.91464"
-			y="-48.393921"
-			id="text1545-9"><tspan
-			  id="tspan1543-4"
-			  x="-399.91464"
-			  y="-48.393921"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.13628104">input image</tspan></text>
-		<g
-			style="stroke-width:0.40255323"
-			transform="translate(3.6817364,2.4008975)"
-			id="g199731">
-		  <text
-			  id="text1198"
-			  y="58.804264"
-			  x="-90.454056"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:Manjari;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.40255323"
-			  xml:space="preserve"><tspan
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.40255323"
-				 y="58.804264"
-				 x="-100.92369"
-				 id="tspan9430"><tspan
-	style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.40255323"
-	id="tspan1194"
-	y="58.804264"
-	x="-100.92369">GAN resynthesis - </tspan>pix2pixHD<tspan
-	style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:Manjari;baseline-shift:super;fill:#aa4400;stroke-width:0.40255323"
-	id="tspan9432">[1]</tspan></tspan></text>
-		  <g
-			  style="stroke-width:0.40255323"
-			  transform="translate(-555.12385,-971.55862)"
-			  id="g3804-1-97">
-			 <circle
-				 r="7"
-				 cy="1027.7638"
-				 cx="388.52747"
-				 id="use3724-3-2-3"
-				 style="fill:none;fill-opacity:1;stroke:#aa4400;stroke-width:1.05996394;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-			 <text
-				 id="text3799-7-6"
-				 y="1032.1647"
-				 x="385.2092"
-				 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.3605769"
-				 xml:space="preserve"><tspan
-					style="font-size:12px;fill:#aa4400;stroke-width:0.3605769"
-					y="1032.1647"
-					x="385.2092"
-					id="tspan3797-0-1">2</tspan></text>
-		  </g>
-		</g>
-		<text
-			xml:space="preserve"
-			style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;line-height:1.25;font-family:Manjari;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.13628104;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			x="-75.91465"
-			y="-33.393925"
-			id="text1545-7"><tspan
-			  id="tspan1543-8"
-			  x="-75.91465"
-			  y="-33.393925"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.13628104">predicted semantic labels</tspan></text>
-		<text
-			xml:space="preserve"
-			style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5px;line-height:1.25;font-family:Manjari;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.13628104;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			x="-65.91465"
-			y="70.606071"
-			id="text1545-7-4-0"><tspan
-			  id="tspan1543-8-5-3"
-			  x="-65.91465"
-			  y="70.606071"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.13628104">discrepancy score</tspan></text>
-		<text
-			xml:space="preserve"
-			style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;line-height:1.25;font-family:Manjari;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.13628104;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-			x="-381.59637"
-			y="44.205173"
-			id="text1545-7-4"><tspan
-			  id="tspan1543-8-5"
-			  x="-381.59637"
-			  y="44.205173"
-			  style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.13628104">resynthesized image</tspan></text>
-	 </g>
+     id="layer1"
+     transform="translate(-6.1991371,-91.097937)">
+    <g
+       style="stroke-width:0.402553"
+       id="layer1-2"
+       transform="matrix(0.73377778,0,0,0.73377778,311.38806,133.7333)">
+      <image
+         sodipodi:absref="/home/adynathos/dev/phd/detecting-the-unexpected-github/doc/pipeline_image.jpg"
+         xlink:href="pipeline_image.jpg"
+         y="-46.393925"
+         x="-415.91464"
+         id="image2283"
+         preserveAspectRatio="none"
+         height="80"
+         width="160"
+         style="stroke-width:0.125798" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.36281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker12632)"
+         d="m -256.2074,8.60607 5.53788,0.182675 c 7.75487,0.255806 8.75487,1.817328 8.57072,11.485967 l 3e-5,106.021838 c 0,10.5132 8.04638,9.30518 24.82532,9.30752 l 14.3588,0.002"
+         id="path3960" />
+      <image
+         sodipodi:absref="/home/adynathos/dev/phd/detecting-the-unexpected-github/doc/pipeline_anomaly_p.jpg"
+         xlink:href="pipeline_anomaly_p.jpg"
+         style="stroke-width:0.100638"
+         y="73.606071"
+         x="-200.91464"
+         id="image2305"
+         preserveAspectRatio="none"
+         height="80"
+         width="160" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.36281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker13210)"
+         d="m -352.2475,121.54003 -0.014,7.58285 c -0.0139,7.5389 5.41974,9.12522 16.75427,9.15744 l 114.59258,0.32575 1.40741,-1.32575"
+         id="path3960-7" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.36281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker12918)"
+         d="M -199.91465,33.606072 H -220.003 c -16.74029,0 -16.74029,0 -16.74029,11.160193 l 0.22462,75.950185 c -0.39598,10.88962 0.60402,11.88962 19.60402,11.88962"
+         id="path3960-75" />
+      <g
+         id="g199760"
+         transform="translate(-24.398059,-2.3128752)"
+         style="stroke-width:0.402553">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1.25;font-family:sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.402553;-inkscape-font-specification:sans;"
+           x="-285.51657"
+           y="153.91895"
+           id="text1204"><tspan
+             x="-285.51657"
+             y="153.91895"
+             id="tspan1202"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans;fill:#aa4400;fill-opacity:1;stroke-width:0.402553;-inkscape-font-specification:sans;">Discrepancy Network</tspan></text>
+        <g
+           id="g3804-1-2"
+           transform="translate(-682.04405,-876.84485)"
+           style="stroke-width:0.402553">
+          <circle
+             style="fill:none;fill-opacity:1;stroke:#aa4400;stroke-width:1.05996;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+             id="use3724-3-2-9"
+             cx="388.52747"
+             cy="1027.7638"
+             r="7" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;line-height:0;font-family:sans;-inkscape-font-specification:sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.360577;"
+             x="388.52747"
+             y="1031.7638"
+             id="text3799-7-3"><tspan
+               id="tspan3797-0-19"
+               x="388.52747"
+               y="1031.7638"
+               style="font-size:12px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:0.360577;-inkscape-font-specification:sans;font-family:sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;">3</tspan></text>
+        </g>
+      </g>
+      <image
+         sodipodi:absref="/home/adynathos/dev/phd/detecting-the-unexpected-github/doc/pipeline_reconstruction.jpg"
+         xlink:href="pipeline_reconstruction.jpg"
+         style="stroke-width:0.125798"
+         y="48.606071"
+         x="-415.91464"
+         id="image2294"
+         preserveAspectRatio="none"
+         height="80"
+         width="160" />
+      <g
+         transform="translate(-420.9382,-743.42832)"
+         id="g195974"
+         style="stroke-width:0.402553">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.55439px;line-height:1.25;font-family:sans;-inkscape-font-specification:sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:1.36281"
+           x="355.52835"
+           y="695.25983"
+           id="text1192"><tspan
+             id="tspan9424"
+             x="306.82101"
+             y="695.25983"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.00001px;font-family:sans;-inkscape-font-specification:sans;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:1.36281"><tspan
+   x="306.82101"
+   y="695.25983"
+   id="tspan1188"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.00001px;font-family:sans;-inkscape-font-specification:sans;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:1.36281"> semantic segmentation - </tspan>PSP Net<tspan
+   id="tspan9428"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans;-inkscape-font-specification:sans;baseline-shift:super;fill:#aa4400;stroke-width:1.36281">[2]</tspan></tspan><tspan
+             id="tspan9426"
+             x="306.82101"
+             y="707.20282"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.00001px;font-family:sans;-inkscape-font-specification:sans;text-align:center;baseline-shift:super;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:1.36281" /></text>
+        <g
+           id="g3804-2"
+           transform="matrix(3.7795276,0,0,3.7795276,-1458.0079,-3868.448)"
+           style="stroke-width:0.402553" />
+        <g
+           id="g3804-1-9"
+           transform="translate(-159.68708,-334.90941)"
+           style="stroke-width:0.402553">
+          <circle
+             style="fill:none;fill-opacity:1;stroke:#aa4400;stroke-width:1.05996;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+             id="use3724-3-2-2"
+             cx="388.52747"
+             cy="1027.7638"
+             r="7" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;line-height:0;font-family:sans;-inkscape-font-specification:sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.360577;"
+             x="388.58444"
+             y="1031.7037"
+             id="text3799-7-2"><tspan
+               id="tspan3797-0-8"
+               x="388.58444"
+               y="1031.7037"
+               style="font-size:12px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:0.360577;-inkscape-font-specification:sans;font-family:sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;">1</tspan></text>
+        </g>
+      </g>
+      <image
+         sodipodi:absref="/home/adynathos/dev/phd/detecting-the-unexpected-github/doc/pipeline_labels.png"
+         xlink:href="pipeline_labels.png"
+         style="stroke-width:0.100638"
+         y="-31.393929"
+         x="-200.91464"
+         id="image2272"
+         preserveAspectRatio="none"
+         height="80"
+         width="160" />
+      <path
+         style="fill:none;stroke:#d45500;stroke-width:1.36281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow1Sstart)"
+         d="m -185.91465,-33.509207 c 0,-7.884719 0,-7.884719 -10,-7.884719 h -59.99999"
+         id="path2310-7" />
+      <path
+         style="fill:none;stroke:#d45500;stroke-width:1.36281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Send)"
+         d="m -185.91465,48.606071 c 0,10.39806 -7.3e-4,10.573423 -20.79612,10.39806 l -47.20387,-0.39806"
+         id="path2310-7-2" />
+      <g
+         id="g5578"
+         transform="translate(-279.65311,5.615318)"
+         style="stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none">
+        <rect
+           ry="1.924116"
+           y="45.559986"
+           x="49.307678"
+           height="14.430767"
+           width="14.430788"
+           id="rect2937"
+           style="fill:#ffffff;fill-opacity:1;stroke:#d45500;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+        <text
+           id="text5570"
+           y="55.990753"
+           x="56.738464"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.45887px;line-height:0;font-family:sans;-inkscape-font-specification:sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;"
+           xml:space="preserve"><tspan
+             style="font-size:10px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:sans;font-family:sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;"
+             y="55.990753"
+             x="56.738464"
+             id="tspan5568">2</tspan></text>
+      </g>
+      <g
+         id="g5578-6"
+         transform="translate(-279.65311,-94.384679)"
+         style="stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none">
+        <rect
+           ry="1.924116"
+           y="45.559986"
+           x="49.307678"
+           height="14.430767"
+           width="14.430788"
+           id="rect2937-4"
+           style="fill:#ffffff;fill-opacity:1;stroke:#d45500;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+        <text
+           id="text5570-5"
+           y="55.990753"
+           x="56.738464"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.45887px;line-height:0;font-family:sans;-inkscape-font-specification:sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;"
+           xml:space="preserve"><tspan
+             style="font-size:10px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;-inkscape-font-specification:sans;font-family:sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;"
+             y="55.990753"
+             x="56.738464"
+             id="tspan5568-5">1</tspan></text>
+      </g>
+      <g
+         id="g5578-5"
+         transform="translate(-279.65311,83.046083)"
+         style="stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none">
+        <rect
+           ry="1.924116"
+           y="45.559986"
+           x="49.307678"
+           height="14.430767"
+           width="14.430788"
+           id="rect2937-6"
+           style="fill:#ffffff;fill-opacity:1;stroke:#d45500;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+        <text
+           id="text5570-0"
+           y="56.159081"
+           x="56.604828"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.45887px;line-height:0;font-family:Manjari;-inkscape-font-specification:serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none"
+           xml:space="preserve"><tspan
+             style="font-size:10px;text-align:center;text-anchor:middle;fill:#aa4400;stroke-width:1.36281;stroke-miterlimit:4;stroke-dasharray:none"
+             y="56.159081"
+             x="56.604828"
+             id="tspan5568-6">3</tspan></text>
+      </g>
+      <text
+         id="text1545-9"
+         y="-49.066391"
+         x="-395.75769"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;line-height:1.25;font-family:sans;-inkscape-font-specification:sans;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.136281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:sans;-inkscape-font-specification:sans;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.136281"
+           y="-49.066391"
+           x="-395.75769"
+           id="tspan1543-4">input image</tspan></text>
+      <g
+         id="g199731"
+         transform="translate(3.6817364,2.4008975)"
+         style="stroke-width:0.402553">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1.25;font-family:sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke:none;stroke-width:0.402553;-inkscape-font-specification:sans;"
+           x="-95.681732"
+           y="58.526569"
+           id="text1198"><tspan
+             id="tspan9430"
+             x="-106.15137"
+             y="58.526569"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.402553;-inkscape-font-specification:sans;"><tspan
+   x="-106.15137"
+   y="58.526569"
+   id="tspan1194"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans;text-align:center;text-anchor:middle;fill:#aa4400;fill-opacity:1;stroke-width:0.402553;-inkscape-font-specification:sans;">GAN resynthesis - </tspan>pix2pixHD<tspan
+   id="tspan9432"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:sans;baseline-shift:super;fill:#aa4400;stroke-width:0.402553;-inkscape-font-specification:sans;">[1]</tspan></tspan></text>
+        <g
+           id="g3804-1-97"
+           transform="translate(-566.93806,-972.21013)"
+           style="stroke-width:0.402553">
+          <circle
+             style="fill:none;fill-opacity:1;stroke:#aa4400;stroke-width:1.05996;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+             id="use3724-3-2-3"
+             cx="388.52747"
+             cy="1027.7638"
+             r="7" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;line-height:0;font-family:sans;-inkscape-font-specification:sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.360577;"
+             x="385.2092"
+             y="1032.1647"
+             id="text3799-7-6"><tspan
+               id="tspan3797-0-1"
+               x="385.2092"
+               y="1032.1647"
+               style="font-size:12px;fill:#aa4400;stroke-width:0.360577;-inkscape-font-specification:sans;font-family:sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;">2</tspan></text>
+        </g>
+      </g>
+      <text
+         id="text1545-7"
+         y="-33.732246"
+         x="-79.670662"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;line-height:1.25;font-family:Manjari;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.136281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:Manjari;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.136281"
+           y="-33.732246"
+           x="-79.670662"
+           id="tspan1543-8">predicted semantic labels</tspan></text>
+      <text
+         id="text1545-7-4-0"
+         y="70.758881"
+         x="-68.472206"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5px;line-height:1.25;font-family:sans;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.136281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-font-specification:sans;"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:sans;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.136281;-inkscape-font-specification:sans;"
+           y="70.758881"
+           x="-68.472206"
+           id="tspan1543-8-5-3">discrepancy score</tspan></text>
+      <text
+         id="text1545-7-4"
+         y="44.205173"
+         x="-381.59637"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;line-height:1.25;font-family:sans;text-align:center;text-anchor:middle;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.136281;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-font-specification:sans;"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:sans;text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.136281;-inkscape-font-specification:sans;"
+           y="44.205173"
+           x="-381.59637"
+           id="tspan1543-8-5">resynthesized image</tspan></text>
+    </g>
   </g>
 </svg>
